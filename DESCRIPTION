@@ -2,20 +2,27 @@ Package: gsm.timez
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+    person("Donato", "Rolo", , "donato.rolo@roche.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Remotes:
+    clindata=Gilead-BioStats/clindata@main,
+    gsm.core=Gilead-BioStats/gsm.core@main,
+    gsm.mapping=Gilead-BioStats/gsm.mapping@main
 Imports:
     dplyr,
-    purrr
-Remotes:
-    clindata=Gilead-BioStats/clindata@main
+    ggplot2,
+    tidyr,
+    slider,
+    purrr,
+    gsm.core
 Suggests:
     testthat (>= 3.0.0),
     clindata,
+    gsm.mapping,
     knitr,
     rmarkdown
 Config/testthat/edition: 3

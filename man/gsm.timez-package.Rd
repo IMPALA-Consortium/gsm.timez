@@ -9,7 +9,7 @@
 What the package does (one paragraph).
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com}
+\strong{Maintainer}: Donato Rolo \email{donato.rolo@roche.com}
 
 }
 \keyword{internal}
