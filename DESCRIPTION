@@ -16,6 +16,7 @@ Imports:
     dplyr,
     ggplot2,
     plotly,
+    rmarkdown,
     tidyr,
     slider,
     purrr,
@@ -24,9 +25,7 @@ Suggests:
     testthat (>= 3.0.0),
     clindata,
     gsm.mapping,
-    gsm.kri,
     knitr,
-    rmarkdown,
     DT,
     yaml
 Config/testthat/edition: 3
