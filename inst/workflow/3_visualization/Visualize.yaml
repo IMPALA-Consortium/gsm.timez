@@ -1,0 +1,21 @@
+meta:
+  Type: Visualization
+  ID: Visualize
+  Description: Create timeline line plot with flag indicators
+
+spec:
+  Analysis_Flag:
+    GroupID:
+      type: character
+    NMonth:
+      type: integer
+    Metric:
+      type: numeric
+    Flag:
+      type: numeric
+
+steps:
+  - output: Visualization_Visualize
+    name: gsm.timez::Visualize
+    params:
+      dfFlagged: Analysis_Flag

@@ -187,38 +187,6 @@ dfTimelineByCountry <- gsm.timez::Timeline(
   strDenominatorDateCol = "visit_dt"
 )
 ```
-
-### Integration with GSM Workflow System
-
-`gsm.timez` can be used with the GSM YAML workflow system. Workflow files are 
-located in `inst/workflow/2_metrics/`:
-
-```{r workflow-example, eval=FALSE}
-library(gsm.core)
-library(gsm.mapping)
-
-# Step 1: Load raw data
-lRaw <- list(
-  Raw_SUBJ = clindata::rawplus_dm,
-  Raw_AE = clindata::rawplus_ae,
-  Raw_VISIT = clindata::rawplus_visdt
-)
-
-# Step 2: Run mapping workflows
-mapping_wf <- MakeWorkflowList(
-  strPath = system.file("workflow/1_mappings", package = "gsm.mapping")
-)
-spec <- CombineSpecs(mapping_wf)
-lIngest <- Ingest(lRaw, spec)
-lMapped <- RunWorkflows(mapping_wf, lIngest)
-
-# Step 3: Run gsm.timez metric workflows
-metrics_wf <- MakeWorkflowList(
-  strPath = system.file("workflow/2_metrics", package = "gsm.timez")
-)
-lResults <- RunWorkflows(metrics_wf, lMapped)
-```
-
 ### Working with Custom Data Sources
 
 When working with data that doesn't follow the `clindata` structure, ensure your 
@@ -265,6 +233,18 @@ dfTimeline <- gsm.timez::Timeline(
 )
 ```
 
+## Interactive Widgets and HTML Reports
+
+For interactive plotly widgets and HTML report generation, see the dedicated 
+vignette: `vignette("HTMLReporting", package = "gsm.timez")`.
+
+Key functions include:
+
+- `Widget_Timeline()` - Interactive line chart
+- `Widget_TimelineBoxplot()` - Interactive boxplot
+- `MakeCharts_Timeline()` - Generate chart lists
+- `Report_Timeline()` - Generate complete HTML reports
+
 ## Complete Workflow
 
 The full pipeline from raw data to visualization:
@@ -283,3 +263,5 @@ gsm.timez::Timeline(
   gsm.timez::Flag() %>%
   gsm.timez::Visualize()
 ```
+
+For generating HTML reports, see `vignette("HTMLReporting", package = "gsm.timez")`.

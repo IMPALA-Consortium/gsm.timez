@@ -72,6 +72,14 @@ gsm.timez::Timeline(
 
 <img src="man/figures/README-quick-start-1.png" width="100%" />
 
+## Sample Report
+
+A full interactive HTML report generated with `Report_Timeline()` is
+available:
+
+- [Sample Timeline
+  Report](https://impala-consortium.github.io/gsm.timez/report_timeline_sample.html)
+
 ## Learn More
 
 For detailed documentation on each function, including parameters,

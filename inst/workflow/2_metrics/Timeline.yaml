@@ -1,6 +1,6 @@
 meta:
   Type: Analysis
-  ID: timeline
+  ID: Timeline
   GroupLevel: Site
   Metric: Cumulative Event Timeline
   Numerator: Events (e.g., Adverse Events)
@@ -31,14 +31,13 @@ spec:
       type: Date
 
 steps:
-  - output: Timeline_Output
+  - output: Analysis_Timeline
     name: gsm.timez::Timeline
     params:
       dfSubjects: Mapped_SUBJ
       dfNumerator: Mapped_AE
       dfDenominator: Mapped_VISIT
       strGroupCol: invid
-      strStudyCol: studyid
       strSubjectCol: subjid
       strNumeratorDateCol: aest_dt
       strDenominatorDateCol: visit_dt

@@ -1,0 +1,19 @@
+meta:
+  Type: Analysis
+  ID: Flag
+  GroupLevel: Site
+  Metric: Flagged Outliers
+  Description: Flag statistical outliers based on z-score thresholds
+
+spec:
+  Analysis_TimeZScore:
+    GroupID:
+      type: character
+    Score:
+      type: numeric
+
+steps:
+  - output: Analysis_Flag
+    name: gsm.timez::Flag
+    params:
+      dfAnalyzed: Analysis_TimeZScore

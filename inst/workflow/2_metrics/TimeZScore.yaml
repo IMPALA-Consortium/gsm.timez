@@ -6,20 +6,22 @@ meta:
   Description: Calculate z-scores for each group based on event rate
 
 spec:
-  Timeline_Output:
-    subject:
+  Analysis_Timeline:
+    GroupID:
       type: character
-    group:
+    GroupLevel:
       type: character
-    group_level:
-      type: character
-    numerator:
-      type: numeric
-    denominator:
-      type: numeric
+    Numerator:
+      type: integer
+    Denominator:
+      type: integer
+    DenominatorMonth:
+      type: Date
+    NMonth:
+      type: integer
 
 steps:
-  - output: TimeZScore_Output
+  - output: Analysis_TimeZScore
     name: gsm.timez::TimeZScore
     params:
-      dfTimeline: Timeline_Output
+      dfTimeline: Analysis_Timeline

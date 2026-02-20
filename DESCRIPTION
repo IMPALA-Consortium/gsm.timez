@@ -15,6 +15,7 @@ Remotes:
 Imports:
     dplyr,
     ggplot2,
+    plotly,
     tidyr,
     slider,
     purrr,
@@ -23,7 +24,10 @@ Suggests:
     testthat (>= 3.0.0),
     clindata,
     gsm.mapping,
+    gsm.kri,
     knitr,
-    rmarkdown
+    rmarkdown,
+    DT,
+    yaml
 Config/testthat/edition: 3
 VignetteBuilder: knitr
