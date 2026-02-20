@@ -1,0 +1,25 @@
+meta:
+  Type: Analysis
+  ID: TimeZScore
+  GroupLevel: Site
+  Metric: Z-Score by Group
+  Description: Calculate z-scores for each group based on event rate
+
+spec:
+  Timeline_Output:
+    subject:
+      type: character
+    group:
+      type: character
+    group_level:
+      type: character
+    numerator:
+      type: numeric
+    denominator:
+      type: numeric
+
+steps:
+  - output: TimeZScore_Output
+    name: gsm.timez::TimeZScore
+    params:
+      dfTimeline: Timeline_Output
