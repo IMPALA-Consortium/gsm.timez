@@ -1,0 +1,18 @@
+meta:
+  Type: Reporting
+  ID: Results
+  Description: Stack timeline analysis results for reporting
+  Priority: 1
+
+steps:
+  - output: dfResultsRaw
+    name: gsm.reporting::BindResults
+    params:
+      lAnalysis: lAnalyzed
+      strName: Flagged
+
+  - output: Reporting_Results
+    name: gsm.core::RunQuery
+    params:
+      df: dfResultsRaw
+      strQuery: "SELECT GroupID, 'Site' as GroupLevel, Numerator, Denominator, DenominatorMonth, NMonth, Metric, Score, Flag, MetricID, SnapshotDate FROM df"

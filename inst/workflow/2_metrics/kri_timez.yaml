@@ -1,0 +1,68 @@
+meta:
+  Type: Analysis
+  ID: kri_timez
+  Name: Cumulative AE Timeline
+  Description: Site-level cumulative adverse event timeline with z-score flagging
+  Status: Pilot
+  GroupLevel: Site
+  Abbreviation: TIMEZ
+  Metric: Cumulative AE Rate Over Time
+  Numerator: Cumulative Adverse Events
+  Denominator: Cumulative Visits
+  AnalysisType: cumulative rate
+  Model: Cumulative Z-Score
+  Score: Z-Score
+  Threshold: "-2,-1,1,2"
+
+spec:
+  Mapped_SUBJ:
+    subjid:
+      type: character
+    invid:
+      type: character
+  Mapped_AE:
+    subjid:
+      type: character
+    aest_dt:
+      type: Date
+  Mapped_VISIT:
+    subjid:
+      type: character
+    visit_dt:
+      type: Date
+
+steps:
+  - output: vThreshold
+    name: gsm.core::ParseThreshold
+    params:
+      strThreshold: Threshold
+
+  - output: Analysis_Timeline
+    name: gsm.timez::Timeline
+    params:
+      dfSubjects: Mapped_SUBJ
+      dfNumerator: Mapped_AE
+      dfDenominator: Mapped_VISIT
+      strGroupCol: invid
+      strSubjectCol: subjid
+      strNumeratorDateCol: aest_dt
+      strDenominatorDateCol: visit_dt
+
+  - output: Analysis_Analyzed
+    name: gsm.timez::TimeZScore
+    params:
+      dfTimeline: Analysis_Timeline
+
+  - output: Analysis_Flagged
+    name: gsm.timez::Flag
+    params:
+      dfAnalyzed: Analysis_Analyzed
+      vThreshold: vThreshold
+
+  - output: lAnalysis
+    name: list
+    params:
+      ID: ID
+      # Timeline: Analysis_Timeline # can use just the last one.
+      # Analyzed: Analysis_Analyzed # can use just the last one.
+      Flagged: Analysis_Flagged

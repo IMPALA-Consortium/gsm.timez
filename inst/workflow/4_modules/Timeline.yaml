@@ -1,0 +1,23 @@
+meta:
+  Type: Module
+  ID: Timeline
+  Description: Generate timeline KRI HTML report using gsm.kri standard template
+
+steps:
+  - output: lChartsRaw
+    name: gsm.timez::MakeCharts_Timeline
+    params:
+      dfFlagged: Analysis_Flagged
+
+  - output: lCharts
+    name: list
+    params:
+      kri_timez: lChartsRaw
+
+  - output: strReportPath
+    name: gsm.kri::Report_KRI
+    params:
+      lCharts: lCharts
+      dfResults: Reporting_Results
+      dfGroups: Reporting_Groups
+      dfMetrics: Reporting_Metrics

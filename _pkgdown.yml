@@ -14,4 +14,4 @@ navbar:
   components:
     sample-report:
       text: Sample Report
-      href: report_timeline_sample.html
+      href: articles/kri_report.html

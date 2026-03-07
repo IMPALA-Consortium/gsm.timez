@@ -1,0 +1,42 @@
+meta:
+  Type: Reporting
+  ID: Groups
+  Description: Create group metadata for reporting
+  Priority: 1
+
+spec:
+  Mapped_SITE:
+    GroupID:
+      type: character
+    GroupLevel:
+      type: character
+    Param:
+      type: character
+    Value:
+      type: character
+  Mapped_STUDY:
+    GroupID:
+      type: character
+    GroupLevel:
+      type: character
+    Param:
+      type: character
+    Value:
+      type: character
+  Mapped_COUNTRY:
+    GroupID:
+      type: character
+    GroupLevel:
+      type: character
+    Param:
+      type: character
+    Value:
+      type: character
+
+steps:
+  - output: Reporting_Groups
+    name: dplyr::bind_rows
+    params:
+      Site: Mapped_SITE
+      Study: Mapped_STUDY
+      Country: Mapped_COUNTRY

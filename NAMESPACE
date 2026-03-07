@@ -2,7 +2,6 @@
 
 export(Flag)
 export(MakeCharts_Timeline)
-export(Report_Timeline)
 export(TimeZScore)
 export(Timeline)
 export(Visualize)

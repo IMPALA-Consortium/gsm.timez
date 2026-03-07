@@ -1,0 +1,91 @@
+---
+title: "GSM YAML Report Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GSM YAML Report Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r vignette-setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(gsm.timez)
+library(gsm.core)
+library(gsm.mapping)
+```
+
+This vignette demonstrates how to use the GSM YAML workflow system to generate
+an HTML report for the timeline KRI.
+
+## Prepare Source Data
+
+```{r prepare-source, message=FALSE}
+lSource <- list(
+  Source_STUDY = clindata::ctms_study,
+  Source_SITE = clindata::ctms_site,
+  Source_SUBJ = clindata::rawplus_dm,
+  Source_AE = clindata::rawplus_ae,
+  # DATAENT is not used by gsm.timez but is required by gsm.mapping's AE workflow.
+  # The studyid column is added because gsm.mapping expects it but clindata has protocolname.
+  Source_DATAENT = clindata::edc_data_pages %>%
+    dplyr::mutate(studyid = protocolname),
+  Source_VISIT = clindata::rawplus_visdt
+)
+```
+
+## Run Mapping Workflows
+
+Use `Ingest()` to standardize column names based on the workflow specs, then
+run the mapping workflows to create the mapped data layer.
+
+```{r run-mapping, message=FALSE, results='hide'}
+mapping_wf <- gsm.core::MakeWorkflowList(
+  strPath = system.file("workflow/1_mappings", package = "gsm.mapping"),
+  strNames = c("SUBJ", "AE", "VISIT", "SITE", "STUDY", "COUNTRY")
+)
+mapping_spec <- gsm.mapping::CombineSpecs(mapping_wf)
+lRaw <- gsm.mapping::Ingest(lSource, mapping_spec)
+lMapped <- gsm.core::RunWorkflows(mapping_wf, lRaw)
+```
+
+## Run Analysis and Reporting Workflows
+
+```{r run-metrics, message=FALSE, results='hide'}
+# Run gsm.timez 2_metrics workflows
+metrics_wf <- gsm.core::MakeWorkflowList(
+  strPath = system.file("workflow/2_metrics", package = "gsm.timez")
+)
+lAnalyzed <- gsm.core::RunWorkflows(metrics_wf, lMapped)
+
+# Run gsm.timez 3_reporting workflows
+reporting_wf <- gsm.core::MakeWorkflowList(
+  strPath = system.file("workflow/3_reporting", package = "gsm.timez")
+)
+lReporting <- gsm.core::RunWorkflows(
+  reporting_wf,
+  c(lMapped, list(lAnalyzed = lAnalyzed, lWorkflows = metrics_wf))
+)
+```
+
+## Generate HTML Report
+
+The final step runs the `4_modules` workflows to generate an HTML report. This step
+uses `gsm.kri::Report_KRI` to render the report template.
+
+```{r run-modules, message=FALSE, results='hide'}
+module_wf <- gsm.core::MakeWorkflowList(
+  strPath = system.file("workflow/4_modules", package = "gsm.timez")
+)
+lReport <- gsm.core::RunWorkflows(
+  module_wf,
+  c(lReporting, list(Analysis_Flagged = lAnalyzed$Analysis_kri_timez$Flagged))
+)
+```
+
+```{r move-for-docs, include=FALSE}
+# Move report to pkgdown/assets for docs site
+dir.create("../pkgdown/assets/articles", recursive = TRUE, showWarnings = FALSE)
+file.rename("kri_report.html", "../pkgdown/assets/articles/kri_report.html")
+```
+
+The workflow generates `kri_report.html`. See the [Sample Report](kri_report.html) for an example output.
