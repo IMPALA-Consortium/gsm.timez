@@ -78,14 +78,16 @@ module_wf <- gsm.core::MakeWorkflowList(
 )
 lReport <- gsm.core::RunWorkflows(
   module_wf,
-  c(lReporting, list(Analysis_Flagged = lAnalyzed$Analysis_kri_timez$Flagged))
+  lReporting
 )
 ```
 
 ```{r move-for-docs, include=FALSE}
-# Move report to pkgdown/assets for docs site
-dir.create("../pkgdown/assets/articles", recursive = TRUE, showWarnings = FALSE)
-file.rename("kri_report.html", "../pkgdown/assets/articles/kri_report.html")
+# Move report to docs/articles/ during pkgdown builds
+dest_dir <- file.path("..", "docs", "articles")
+if (dir.exists(dest_dir)) {
+  file.rename(lReport$Module_Timeline, file.path(dest_dir, "kri_report.html"))
+}
 ```
 
 The workflow generates `kri_report.html`. See the [Sample Report](kri_report.html) for an example output.

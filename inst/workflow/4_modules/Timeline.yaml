@@ -1,18 +1,39 @@
 meta:
   Type: Module
   ID: Timeline
-  Description: Generate timeline KRI HTML report using gsm.kri standard template
+  Description: Generate timeline KRI HTML report with default and custom charts
 
 steps:
-  - output: lChartsRaw
-    name: gsm.timez::MakeCharts_Timeline
+  - output: lChartsDefault
+    name: gsm.kri::MakeCharts
     params:
-      dfFlagged: Analysis_Flagged
+      dfResults: Reporting_Results
+      dfMetrics: Reporting_Metrics
+      dfGroups: Reporting_Groups
+      dfBounds: ~
+
+  - output: lChartsVisualize
+    name: gsm.timez::Widget
+    params:
+      dfResults: Reporting_Results_allmonths
+      strVisualizeFun: "gsm.timez::Visualize"
+      strOutputLabel: "Visualize"
+      strIcon: "chart-line"
+
+  - output: lChartsVisualizeBoxplot
+    name: gsm.timez::Widget
+    params:
+      dfResults: Reporting_Results_allmonths
+      strVisualizeFun: "gsm.timez::VisualizeBoxplot"
+      strOutputLabel: "VisualizeBoxplot"
+      strIcon: "chart-column"
 
   - output: lCharts
-    name: list
+    name: gsm.timez::MergeChartLists
     params:
-      kri_timez: lChartsRaw
+      lChartsDefault: lChartsDefault
+      lChartsVisualize: lChartsVisualize
+      lChartsVisualizeBoxplot: lChartsVisualizeBoxplot
 
   - output: strReportPath
     name: gsm.kri::Report_KRI
