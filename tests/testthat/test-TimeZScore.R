@@ -14,10 +14,10 @@ test_that("TimeZScore returns correct column names", {
 
   result <- TimeZScore(dfTimeline)
 
-  # Should have original columns plus Metric and Score
+  # Should have original columns plus Metric, metric_mean, metric_sd, scale, and Score
   expect_equal(
     names(result),
-    c("GroupID", "GroupLevel", "Numerator", "Denominator", "DenominatorMonth", "NMonth", "Metric", "Score")
+    c("GroupID", "GroupLevel", "Numerator", "Denominator", "DenominatorMonth", "NMonth", "Metric", "metric_mean", "metric_sd", "scale", "Score")
   )
 })
 
@@ -187,4 +187,51 @@ test_that("TimeZScore uses cumulative window correctly for month 2", {
   ratio_month_2 <- month_2$Numerator / month_2$Denominator
   expected_score_month_2 <- (ratio_month_2 - mean_ratio_1_2) / sd_ratio_1_2
   expect_equal(month_2$Score, expected_score_month_2)
+})
+
+
+test_that("TimeZScore with bAdjustForSize = TRUE adjusts for sample size", {
+  dfTimeline <- data.frame(
+    GroupID = c("A", "B", "C"),
+    GroupLevel = "Site",
+    Numerator = c(10, 20, 15),
+    Denominator = c(100, 400, 225),
+    DenominatorMonth = as.Date("2022-01-01"),
+    NMonth = 1
+  )
+
+  result_no_adjust <- TimeZScore(dfTimeline, bAdjustForSize = FALSE)
+  result_adjust <- TimeZScore(dfTimeline, bAdjustForSize = TRUE)
+
+  # Both should have the same mean and sd
+  expect_equal(result_no_adjust$metric_mean, result_adjust$metric_mean)
+  expect_equal(result_no_adjust$metric_sd, result_adjust$metric_sd)
+
+  # Scale should differ: without adjustment it's just sd, with adjustment it's sd/sqrt(Denominator)
+  expect_equal(result_no_adjust$scale, result_no_adjust$metric_sd)
+  expect_equal(result_adjust$scale, result_adjust$metric_sd / sqrt(result_adjust$Denominator))
+
+  # Scores should be different when bAdjustForSize = TRUE
+  # Sites with larger Denominator should have more extreme scores when adjusted
+  expect_false(all(result_no_adjust$Score == result_adjust$Score))
+})
+
+
+test_that("TimeZScore bAdjustForSize produces different scale per site", {
+  dfTimeline <- data.frame(
+    GroupID = c("Small", "Large"),
+    GroupLevel = "Site",
+    Numerator = c(5, 50),
+    Denominator = c(10, 1000),
+    DenominatorMonth = as.Date("2022-01-01"),
+    NMonth = 1
+  )
+
+  result <- TimeZScore(dfTimeline, bAdjustForSize = TRUE)
+
+  # With adjustment, Large site should have smaller scale (sd / sqrt(1000) < sd / sqrt(10))
+  small_site <- result[result$GroupID == "Small", ]
+  large_site <- result[result$GroupID == "Large", ]
+
+  expect_true(large_site$scale < small_site$scale)
 })

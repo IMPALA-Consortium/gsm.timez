@@ -1,8 +1,8 @@
 ---
-title: "GSM YAML Report Workflow"
+title: "GSM YAML Report Workflow (Funnel Method)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{GSM YAML Report Workflow}
+  %\VignetteIndexEntry{GSM YAML Report Workflow (Funnel Method)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,12 @@ library(gsm.mapping)
 ```
 
 This vignette demonstrates how to use the GSM YAML workflow system to generate
-an HTML report for the timeline KRI.
+an HTML report for the timeline KRI using the **funnel-based z-score method**.
+This method uses expected rates based on overall study averages rather than
+empirical distributions, making it more robust for studies with fewer sites.
+
+For comparison with the empirical z-score method, see the
+[GSM YAML Report Workflow](gsm-yaml-report.html) vignette.
 
 ## Prepare Source Data
 
@@ -51,10 +56,10 @@ lMapped <- gsm.core::RunWorkflows(mapping_wf, lRaw)
 ## Run Analysis and Reporting Workflows
 
 ```{r run-metrics, message=FALSE, results='hide'}
-# Run gsm.timez 2_metrics workflows (empirical z-score method only)
+# Run gsm.timez 2_metrics workflows (funnel method only)
 metrics_wf <- gsm.core::MakeWorkflowList(
   strPath = system.file("workflow/2_metrics", package = "gsm.timez"),
-  strNames = "kri_timez",
+  strNames = "kri_timez_funnel",
   bExact = TRUE
 )
 lAnalyzed <- gsm.core::RunWorkflows(metrics_wf, lMapped)
@@ -77,7 +82,7 @@ uses `gsm.kri::Report_KRI` to render the report template.
 ```{r run-modules, message=FALSE, results='hide'}
 module_wf <- gsm.core::MakeWorkflowList(
   strPath = system.file("workflow/4_modules", package = "gsm.timez"),
-  strNames = "Timeline",
+  strNames = "TimelineFunnel",
   bExact = TRUE
 )
 lReport <- gsm.core::RunWorkflows(
@@ -90,8 +95,8 @@ lReport <- gsm.core::RunWorkflows(
 # Move report to docs/articles/ during pkgdown builds
 dest_dir <- file.path("..", "docs", "articles")
 if (dir.exists(dest_dir)) {
-  file.rename(lReport$Module_Timeline, file.path(dest_dir, "kri_report.html"))
+  file.rename(lReport$Module_TimelineFunnel, file.path(dest_dir, "kri_report_funnel.html"))
 }
 ```
 
-The workflow generates `kri_report.html`. See the [Sample Report](kri_report.html) for an example output.
+The workflow generates `kri_report_funnel.html`. See the [Sample Report (Funnel)](kri_report_funnel.html) for an example output.

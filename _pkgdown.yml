@@ -7,11 +7,15 @@ navbar:
     left:
       - reference
       - articles
-      - sample-report
+      - sample-reports
     right:
       - search
       - github
   components:
-    sample-report:
-      text: Sample Report
-      href: articles/kri_report.html
+    sample-reports:
+      text: Sample Reports
+      menu:
+        - text: "Empirical Z-Score"
+          href: articles/kri_report.html
+        - text: "Funnel Method"
+          href: articles/kri_report_funnel.html

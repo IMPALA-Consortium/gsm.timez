@@ -4,16 +4,23 @@
 \alias{Visualize}
 \title{Visualize Site Cumulative Events Over Time with Flag Indicators}
 \usage{
-Visualize(dfFlagged)
+Visualize(dfFlagged, dfBounds = NULL)
 }
 \arguments{
 \item{dfFlagged}{A data frame output from Flag() containing columns:
-GroupID, NMonth, Numerator, and Flag.}
+GroupID, NMonth, Metric, Flag. Must have \code{vThreshold} and \code{vFlag}
+attributes (set by \code{gsm.timez::Flag()}).}
+
+\item{dfBounds}{Optional. A data frame with pre-calculated bounds from
+\code{\link{TimeZScore_PredictBounds}}. If provided, bounds (mean line
+and upper/lower threshold lines) are drawn on the plot. If NULL (default),
+no bounds are shown.}
 }
 \value{
-A ggplot2 object showing Numerator vs NMonth with gray lines per site
-and dots colored by Flag value (diverging scale: red=low outlier,
-gray=normal, blue=high outlier).
+A ggplot2 object showing Metric vs NMonth with gray lines per site,
+dots colored by Flag value (diverging scale: red=outlier, gray=normal).
+If dfBounds is provided, also shows a solid line for mean and dashed lines
+for upper/lower bounds based on the inner thresholds from vThreshold.
 }
 \description{
 Creates a line plot showing the cumulative Numerator (events) for each group
@@ -54,4 +61,7 @@ dfFlagged <- Timeline(
 
 Visualize(dfFlagged)
 
+}
+\seealso{
+\code{\link{TimeZScore_PredictBounds}} for calculating bounds separately.
 }

@@ -8,11 +8,20 @@
 #' @param dfTimeline A data frame output from \code{\link{Timeline}}. Must
 #'   contain columns: \code{GroupID}, \code{GroupLevel}, \code{Numerator},
 #'   \code{Denominator}, and \code{NMonth}.
+#' @param bAdjustForSize Logical. If \code{TRUE}, adjusts the z-score scaling
+#'   factor for sample size by dividing the standard deviation by the square
+#'   root of the Denominator. This accounts for the fact that larger sites
+#'   should have narrower confidence bounds. Default is \code{FALSE}.
 #'
-#' @return The input data frame with two additional columns:
+#' @return The input data frame with additional columns:
 #'   \itemize{
 #'     \item \code{Metric}: The ratio of Numerator to Denominator
 #'       (Numerator / Denominator).
+#'     \item \code{metric_mean}: The cumulative mean of Metric values from all
+#'       groups up to and including that month.
+#'     \item \code{metric_sd}: The cumulative standard deviation of Metric
+#'       values from all groups up to and including that month. Returns 0 if
+#'       fewer than 2 values exist.
 #'     \item \code{Score}: The z-score calculated using an expanding window.
 #'       For month N, the z-score is calculated using all ratios from months
 #'       1 through N across all groups. If fewer than 2 ratios exist in the
@@ -21,10 +30,16 @@
 #'
 #' @details
 #' The z-score is calculated as:
-#' \deqn{z = \frac{Metric - mean(Metrics)}{sd(Metrics)}}
+#' \deqn{z = \frac{Metric - mean(Metrics)}{scale}}
 #'
 #' Where \code{Metrics} includes all Metric values from all groups where
 #' \code{NMonth <= current_NMonth}.
+#'
+#' When \code{bAdjustForSize = FALSE} (default):
+#' \deqn{scale = sd(Metrics)}
+#'
+#' When \code{bAdjustForSize = TRUE}:
+#' \deqn{scale = \frac{sd(Metrics)}{\sqrt{Denominator}}}
 #'
 #' @examples
 #' library(dplyr)
@@ -60,7 +75,7 @@
 #' TimeZScore(dfTimeline)
 #'
 #' @export
-TimeZScore <- function(dfTimeline) {
+TimeZScore <- function(dfTimeline, bAdjustForSize = FALSE) {
   # Validate input columns
   required_cols <- c("GroupID", "GroupLevel", "Numerator", "Denominator", "NMonth")
   stopifnot(all(required_cols %in% names(dfTimeline)))
@@ -86,7 +101,7 @@ TimeZScore <- function(dfTimeline) {
   df %>%
     dplyr::left_join(cumulative_stats, by = "NMonth") %>%
     dplyr::mutate(
-      Score = dplyr::if_else(.data$metric_sd == 0, 0, (.data$Metric - .data$metric_mean) / .data$metric_sd)
-    ) %>%
-    dplyr::select(-"metric_mean", -"metric_sd")
+      scale = if (bAdjustForSize) .data$metric_sd / sqrt(.data$Denominator) else .data$metric_sd,
+      Score = dplyr::if_else(.data$scale == 0, 0, (.data$Metric - .data$metric_mean) / .data$scale)
+    )
 }

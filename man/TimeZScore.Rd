@@ -4,18 +4,28 @@
 \alias{TimeZScore}
 \title{Calculate Cumulative Z-Scores for Timeline Data}
 \usage{
-TimeZScore(dfTimeline)
+TimeZScore(dfTimeline, bAdjustForSize = FALSE)
 }
 \arguments{
 \item{dfTimeline}{A data frame output from \code{\link{Timeline}}. Must
 contain columns: \code{GroupID}, \code{GroupLevel}, \code{Numerator},
 \code{Denominator}, and \code{NMonth}.}
+
+\item{bAdjustForSize}{Logical. If \code{TRUE}, adjusts the z-score scaling
+factor for sample size by dividing the standard deviation by the square
+root of the Denominator. This accounts for the fact that larger sites
+should have narrower confidence bounds. Default is \code{FALSE}.}
 }
 \value{
-The input data frame with two additional columns:
+The input data frame with additional columns:
 \itemize{
 \item \code{Metric}: The ratio of Numerator to Denominator
 (Numerator / Denominator).
+\item \code{metric_mean}: The cumulative mean of Metric values from all
+groups up to and including that month.
+\item \code{metric_sd}: The cumulative standard deviation of Metric
+values from all groups up to and including that month. Returns 0 if
+fewer than 2 values exist.
 \item \code{Score}: The z-score calculated using an expanding window.
 For month N, the z-score is calculated using all ratios from months
 1 through N across all groups. If fewer than 2 ratios exist in the
@@ -30,10 +40,16 @@ distribution of ratios up to that month.
 }
 \details{
 The z-score is calculated as:
-\deqn{z = \frac{Metric - mean(Metrics)}{sd(Metrics)}}
+\deqn{z = \frac{Metric - mean(Metrics)}{scale}}
 
 Where \code{Metrics} includes all Metric values from all groups where
 \code{NMonth <= current_NMonth}.
+
+When \code{bAdjustForSize = FALSE} (default):
+\deqn{scale = sd(Metrics)}
+
+When \code{bAdjustForSize = TRUE}:
+\deqn{scale = \frac{sd(Metrics)}{\sqrt{Denominator}}}
 }
 \examples{
 library(dplyr)

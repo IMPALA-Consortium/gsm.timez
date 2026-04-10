@@ -4,7 +4,14 @@
 \alias{Widget}
 \title{Generic Widget for Timeline Visualizations}
 \usage{
-Widget(dfResults, strVisualizeFun, strOutputLabel, strIcon = NULL, ...)
+Widget(
+  dfResults,
+  strVisualizeFun,
+  strOutputLabel,
+  strIcon = NULL,
+  bInteractive = TRUE,
+  ...
+)
 }
 \arguments{
 \item{dfResults}{A stacked data frame with a MetricID column, typically
@@ -19,13 +26,18 @@ to apply, including namespace (e.g., "gsm.timez::Visualize").}
 \item{strIcon}{Optional Font Awesome icon name (e.g., "chart-line"). If
 provided, the icon is prepended to the tab label.}
 
+\item{bInteractive}{Logical. If TRUE (default), creates fully interactive
+plotly charts. If FALSE, creates static plotly charts (no zoom, pan, hover)
+which render faster and produce smaller HTML output. Use FALSE for
+visualizations with many elements (e.g., heatmaps).}
+
 \item{...}{Additional arguments passed to the visualization function.}
 }
 \value{
 A named list of plotly htmlwidget objects, keyed by MetricID.
 }
 \description{
-Creates interactive plotly charts for each metric by applying a visualization
-function to stacked results data. The visualization function is specified as
-a string (e.g., "gsm.timez::Visualize") and resolved at runtime.
+Creates charts for each metric by applying a visualization function to
+stacked results data. The visualization function is specified as a string
+(e.g., "gsm.timez::Visualize") and resolved at runtime.
 }

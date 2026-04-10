@@ -70,7 +70,7 @@ gsm.timez::Timeline(
   gsm.timez::Visualize()
 ```
 
-<img src="man/figures/README-quick-start-1.png" width="100%" />
+<img src="man/figures/README-quick-start-1.png" alt="" width="100%" />
 
 ## Sample Report
 
@@ -109,3 +109,142 @@ particular, we do the following during early development:
   as a vignette.
 - **Code Demonstration** - Cookbook Vignette provides demos and
   explanations for code usage.
+
+## Scoring Methods Comparison
+
+The package provides three different approaches for calculating
+z-scores, each with different statistical properties:
+
+| Method                       | Function                            | Distribution | Sample Size Adjusted | Scale Factor     |
+|------------------------------|-------------------------------------|--------------|----------------------|------------------|
+| Empirical Z-Score            | `TimeZScore()`                      | Normal       | No                   | `sd`             |
+| Empirical Z-Score (Adjusted) | `TimeZScore(bAdjustForSize = TRUE)` | Normal       | Yes                  | `sd / sqrt(n)`   |
+| Funnel Plot                  | `TimeZScoreFunnel()`                | Poisson      | Yes                  | `sqrt(lambda/n)` |
+
+### Empirical Z-Score (Default)
+
+The default `TimeZScore()` uses an empirical z-score that treats all
+sites equally regardless of sample size:
+
+``` r
+Score = (Metric - mean) / sd
+```
+
+### Empirical Z-Score with Sample Size Adjustment
+
+Setting `bAdjustForSize = TRUE` adjusts the scaling factor for sample
+size, giving larger sites narrower bounds:
+
+``` r
+Score = (Metric - mean) / (sd / sqrt(Denominator))
+```
+
+### Funnel Plot Method (Poisson-based)
+
+`TimeZScoreFunnel()` uses the funnel plot methodology from Zink et al.,
+which assumes count data follows a Poisson distribution. The standard
+error is derived from Poisson variance assumptions, and larger sites
+receive narrower confidence bounds:
+
+``` r
+Score = (Metric - OverallMetric) / sqrt(OverallMetric * Factor / Denominator)
+```
+
+### Example: Comparing All Three Methods
+
+``` r
+library(gsm.timez)
+library(dplyr)
+
+# Prepare data
+dfSubjects <- clindata::rawplus_dm
+dfNumerator <- clindata::rawplus_ae
+dfDenominator <- clindata::rawplus_visdt %>%
+  dplyr::mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d"))
+
+# Create timeline
+dfTimeline <- Timeline(
+  dfSubjects = dfSubjects,
+  dfNumerator = dfNumerator,
+  dfDenominator = dfDenominator,
+  strGroupCol = "siteid",
+  strSubjectCol = "subjid",
+  strNumeratorDateCol = "aest_dt",
+  strDenominatorDateCol = "visit_dt"
+)
+```
+
+**Method 1: Empirical Z-Score (default)**
+
+``` r
+dfAnalyzed1 <- dfTimeline %>% TimeZScore()
+dfFlagged1 <- dfAnalyzed1 %>% Flag()
+dfBounds1 <- TimeZScore_PredictBounds(dfAnalyzed1)
+
+Visualize(dfFlagged1, dfBounds = dfBounds1)
+```
+
+<img src="man/figures/README-scoring-method1-1.png" alt="" width="100%" />
+
+**Method 2: Empirical Z-Score with sample size adjustment**
+
+``` r
+dfAnalyzed2 <- dfTimeline %>% TimeZScore(bAdjustForSize = TRUE)
+dfFlagged2 <- dfAnalyzed2 %>% Flag()
+dfBounds2 <- TimeZScore_PredictBounds(dfAnalyzed2)
+
+Visualize(dfFlagged2, dfBounds = dfBounds2)
+```
+
+<img src="man/figures/README-scoring-method2-1.png" alt="" width="100%" />
+
+**Method 3: Funnel Plot (Poisson-based)**
+
+This method requires the `gsm.core` package:
+
+``` r
+dfAnalyzed3 <- dfTimeline %>% TimeZScoreFunnel()
+dfFlagged3 <- dfAnalyzed3 %>% Flag(vThreshold = c(-1.5, -1, 2, 3))
+dfBounds3 <- TimeZScoreFunnel_PredictBounds(dfAnalyzed3, vThreshold = c(-1.5, -1, 2, 3))
+
+VisualizeFunnel(dfFlagged3)
+```
+
+<img src="man/figures/README-scoring-method3-1.png" alt="" width="100%" />
+
+**Note:** The funnel method uses asymmetric thresholds
+(`c(-1.5, -1, 2, 3)`) because under-reporting scores are mathematically
+bounded. Since Metric \>= 0, the minimum possible score is approximately
+`-sqrt(OverallMetric * Denominator / Factor)`, which is typically around
+-1.5 to -2. Using symmetric thresholds like `c(-3, -2, 2, 3)` would make
+under-reporting flags unreachable.
+
+The choice of method depends on your analysis goals:
+
+- **Empirical Z-Score**: Simple comparison against peer distribution
+- **Size-Adjusted**: Account for variability differences due to sample
+  size
+- **Funnel Plot**: Formal statistical approach matching Zink et
+  al. methodology
+
+### Workflow Pattern (GSM-compatible)
+
+Following the GSM ecosystem conventions, bounds are calculated
+separately from visualization:
+
+``` r
+# 1. Analyze: Calculate scores
+dfAnalyzed <- dfTimeline %>% TimeZScore()
+
+# 2. Flag: Assign outlier flags based on Score thresholds
+dfFlagged <- dfAnalyzed %>% Flag()
+
+# 3. Bounds: Calculate visualization bounds (separate step)
+dfBounds <- TimeZScore_PredictBounds(dfAnalyzed)
+
+# 4. Visualize: Pass both flagged data and bounds
+Visualize(dfFlagged, dfBounds = dfBounds)
+```
+
+This separation of concerns allows bounds to be reused across multiple
+visualizations and aligns with the GSM ecosystem architecture.
