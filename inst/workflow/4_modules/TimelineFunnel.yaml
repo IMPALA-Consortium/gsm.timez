@@ -21,11 +21,42 @@ steps:
       strIcon: "th"
       bInteractive: false
 
+  - output: lChartsVisualizeFunnelPlot
+    name: gsm.timez::Widget
+    params:
+      dfResults: Reporting_Results_allmonths
+      dfBounds: Reporting_Bounds
+      strVisualizeFun: "gsm.timez::VisualizeFunnelPlot"
+      strOutputLabel: "Funnel Plot"
+      strIcon: "bullseye"
+      bInteractive: false
+
+  - output: lChartsSite0X159
+    name: gsm.timez::Widget
+    params:
+      dfResults: Reporting_Results_allmonths
+      strVisualizeFun: "gsm.timez::VisualizeSite"
+      strOutputLabel: "Site 0X159"
+      strIcon: "magnifying-glass"
+      strSiteID: "0X159"
+
+  - output: lChartsSite0X153
+    name: gsm.timez::Widget
+    params:
+      dfResults: Reporting_Results_allmonths
+      strVisualizeFun: "gsm.timez::VisualizeSite"
+      strOutputLabel: "Site 0X153"
+      strIcon: "magnifying-glass"
+      strSiteID: "0X153"
+
   - output: lCharts
     name: gsm.timez::MergeChartLists
     params:
       lChartsDefault: lChartsDefault
       lChartsVisualizeFunnel: lChartsVisualizeFunnel
+      lChartsVisualizeFunnelPlot: lChartsVisualizeFunnelPlot
+      lChartsSite0X159: lChartsSite0X159
+      lChartsSite0X153: lChartsSite0X153
 
   - output: strReportPath
     name: gsm.kri::Report_KRI

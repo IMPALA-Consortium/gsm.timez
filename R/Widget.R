@@ -16,13 +16,18 @@
 #'   plotly charts. If FALSE, creates static plotly charts (no zoom, pan, hover)
 #'   which render faster and produce smaller HTML output. Use FALSE for
 #'   visualizations with many elements (e.g., heatmaps).
+#' @param dfBounds Optional data frame with a \code{MetricID} column (e.g.,
+#'   \code{Reporting_Bounds}). When provided, it is filtered to the current
+#'   MetricID and passed as the second positional argument to the visualization
+#'   function, before \code{...}. Use this for functions like
+#'   \code{\link{VisualizeFunnelPlot}} that require a separate bounds data frame.
 #' @param ... Additional arguments passed to the visualization function.
 #'
 #' @return A named list of plotly htmlwidget objects, keyed by MetricID.
 #'
 #' @export
 Widget <- function(dfResults, strVisualizeFun, strOutputLabel, strIcon = NULL,
-                   bInteractive = TRUE, ...) {
+                   bInteractive = TRUE, dfBounds = NULL, ...) {
   fnVisualize <- eval(parse(text = strVisualizeFun))
   strMetrics <- unique(dfResults$MetricID)
 
@@ -35,7 +40,12 @@ Widget <- function(dfResults, strVisualizeFun, strOutputLabel, strIcon = NULL,
   lCharts <- strMetrics %>%
     purrr::map(function(metric) {
       dfMetric <- dfResults %>% dplyr::filter(.data$MetricID == metric)
-      p <- fnVisualize(dfMetric, ...)
+      if (!is.null(dfBounds)) {
+        dfBoundsMetric <- dfBounds %>% dplyr::filter(.data$MetricID == metric)
+        p <- fnVisualize(dfMetric, dfBoundsMetric, ...)
+      } else {
+        p <- fnVisualize(dfMetric, ...)
+      }
 
       if (bInteractive) {
         chart <- plotly::ggplotly(p)

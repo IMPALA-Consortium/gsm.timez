@@ -10,6 +10,7 @@ Widget(
   strOutputLabel,
   strIcon = NULL,
   bInteractive = TRUE,
+  dfBounds = NULL,
   ...
 )
 }
@@ -30,6 +31,12 @@ provided, the icon is prepended to the tab label.}
 plotly charts. If FALSE, creates static plotly charts (no zoom, pan, hover)
 which render faster and produce smaller HTML output. Use FALSE for
 visualizations with many elements (e.g., heatmaps).}
+
+\item{dfBounds}{Optional data frame with a \code{MetricID} column (e.g.,
+\code{Reporting_Bounds}). When provided, it is filtered to the current
+MetricID and passed as the second positional argument to the visualization
+function, before \code{...}. Use this for functions like
+\code{\link{VisualizeFunnelPlot}} that require a separate bounds data frame.}
 
 \item{...}{Additional arguments passed to the visualization function.}
 }

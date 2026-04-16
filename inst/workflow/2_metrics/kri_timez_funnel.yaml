@@ -59,8 +59,15 @@ steps:
       dfAnalyzed: Analysis_Analyzed
       vThreshold: vThreshold
 
+  - output: Analysis_Bounds
+    name: gsm.timez::TimeZScoreFunnel_PredictBounds
+    params:
+      dfAnalyzed: Analysis_Analyzed
+      vThreshold: vThreshold
+
   - output: lAnalysis
     name: list
     params:
       ID: ID
       Flagged: Analysis_Flagged
+      Bounds: Analysis_Bounds

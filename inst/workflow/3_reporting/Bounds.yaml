@@ -1,0 +1,29 @@
+meta:
+  Type: Reporting
+  ID: Bounds
+  Description: Stack funnel bounds across all metrics for use in VisualizeFunnelPlot
+
+spec:
+  Mapped_STUDY:
+    GroupID:
+      required: true
+      type: character
+
+steps:
+  - output: vGroupID
+    name: dplyr::pull
+    params:
+      .data: Mapped_STUDY
+      var: GroupID
+
+  - output: strStudyID
+    name: base::unique
+    params:
+      x: vGroupID
+
+  - output: Reporting_Bounds
+    name: gsm.reporting::BindResults
+    params:
+      lAnalysis: lAnalyzed
+      strName: Bounds
+      strStudyID: strStudyID

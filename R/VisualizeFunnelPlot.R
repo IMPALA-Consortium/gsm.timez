@@ -169,8 +169,7 @@ VisualizeFunnelPlot <- function(dfFlagged, dfBounds, NMonth = NULL) {
     ggplot2::scale_x_log10() +
     # Labels
     ggplot2::labs(
-      title = "Funnel Plot",
-      subtitle = paste("Month:", NMonth),
+      title = paste0("Funnel Plot \u2014 Month: ", NMonth),
       x = "Denominator (log scale)",
       y = "Metric",
       color = "Flag"
