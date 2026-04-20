@@ -19,3 +19,5 @@ navbar:
           href: articles/kri_report.html
         - text: "Funnel Method"
           href: articles/kri_report_funnel.html
+        - text: "Funnel Methods CUSTOM"
+          href: articles/kri_report_funnel_custom.html

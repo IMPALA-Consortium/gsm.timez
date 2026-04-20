@@ -2,6 +2,7 @@
 
 export(Flag)
 export(MergeChartLists)
+export(Report_KRI_Custom)
 export(TimeZScore)
 export(TimeZScoreFunnel)
 export(TimeZScoreFunnel_PredictBounds)
