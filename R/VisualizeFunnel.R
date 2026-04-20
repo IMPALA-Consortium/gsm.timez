@@ -79,15 +79,11 @@ VisualizeFunnel <- function(dfFlagged) {
   vFlag <- attr(dfFlagged, "vFlag")
 
 
-  # ============================================================================
-  # TEMPORARY: Limit to 15 sites for faster plotly generation during testing.
-  # TODO: REMOVE THIS BLOCK BEFORE PRODUCTION
-  # ============================================================================
-  vSiteIDs <- unique(dfFlagged$GroupID)
-  vSiteIDs <- head(vSiteIDs, 15)
-  dfFlagged <- dfFlagged %>%
-    dplyr::filter(.data$GroupID %in% vSiteIDs)
-  # ============================================================================
+# ============================================================================
+# TEMPORARY: Limit to 30 sites for faster plotly generation during testing.
+# ============================================================================
+  vSiteIDs <- head(unique(dfFlagged$GroupID), 30)
+  dfFlagged <- dfFlagged %>% dplyr::filter(.data$GroupID %in% vSiteIDs)
 
   # Prepare data for plotting
   dfPlot <- dfFlagged %>%

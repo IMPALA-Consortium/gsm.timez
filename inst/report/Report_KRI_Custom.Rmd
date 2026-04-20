@@ -156,8 +156,11 @@ for (i in vMetrics) {
 
   print(htmltools::h3(lMetric$Metric))
 
+  lChartsNoHeatmap <- params$lCharts[[lMetric$MetricID]]
+  lChartsNoHeatmap <- lChartsNoHeatmap[names(lChartsNoHeatmap) != "Funnel Heatmap"]
+
   Report_MetricCharts(
-    lCharts = params$lCharts[[lMetric$MetricID]],
+    lCharts = lChartsNoHeatmap,
     strMetricID = lMetric$MetricID
   )
 
@@ -165,6 +168,22 @@ for (i in vMetrics) {
 
 }
 
+```
+
+## Heatmap
+
+```{r, echo=FALSE, results='asis'}
+for (i in vMetrics) {
+  lMetric <- params$dfMetrics %>% dplyr::filter(MetricID == i) %>% as.list
+  chart <- params$lCharts[[lMetric$MetricID]][["Funnel Heatmap"]]
+  if (!is.null(chart)) {
+    print(htmltools::h3(lMetric$Metric))
+    knitr::knit_print(chart) %>% attr("knit_meta") %>% knitr::knit_meta_add()
+    cat("<div class='gsm-widget'>")
+    cat(knitr::knit_print(htmltools::tagList(chart)))
+    cat("</div>")
+  }
+}
 ```
 
 ## Metric Details

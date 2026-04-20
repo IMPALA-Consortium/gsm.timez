@@ -19,7 +19,7 @@ steps:
       strVisualizeFun: "gsm.timez::VisualizeFunnel"
       strOutputLabel: "Funnel Heatmap"
       strIcon: "th"
-      bInteractive: false
+      bInteractive: true
 
   - output: lChartsVisualizeFunnelPlot
     name: gsm.timez::Widget
@@ -29,7 +29,7 @@ steps:
       strVisualizeFun: "gsm.timez::VisualizeFunnelPlot"
       strOutputLabel: "Funnel Plot"
       strIcon: "bullseye"
-      bInteractive: false
+      bInteractive: true
 
   - output: lChartsSite0X159
     name: gsm.timez::Widget
