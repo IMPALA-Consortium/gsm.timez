@@ -123,7 +123,7 @@ test_that("VisualizeFunnel works with clindata", {
       dfSubjects = clindata::rawplus_dm,
       dfNumerator = clindata::rawplus_ae,
       dfDenominator = clindata::rawplus_visdt %>% dplyr::mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d")),
-      strGroupCol = "siteid",
+      strGroupCol = "invid",
       strSubjectCol = "subjid",
       strNumeratorDateCol = "aest_dt",
       strDenominatorDateCol = "visit_dt"

@@ -11,6 +11,10 @@
 #' @param vThreshold Numeric vector of threshold values for bounds. Default is
 #'   \code{c(-3, -2, 2, 3)}. A threshold of 0 (for the mean line) is
 #'   automatically included by \code{gsm.core::Analyze_NormalApprox_PredictBounds}.
+#' @param nMinSiteFraction Minimum fraction of peak site count required to
+#'   return non-\code{NA} bounds for a month. Months where the number of
+#'   distinct \code{GroupID}s is below this fraction of the maximum are
+#'   returned with \code{Metric = NA}. Default is \code{0.2} (20\%).
 #'
 #' @return A data frame with columns:
 #'   \itemize{
@@ -74,10 +78,13 @@
 #' }
 #'
 #' @export
-TimeZScoreFunnel_PredictBounds <- function(dfAnalyzed, vThreshold = c(-3, -2, 2, 3)) {
+TimeZScoreFunnel_PredictBounds <- function(dfAnalyzed, vThreshold = c(-3, -2, 2, 3), nMinSiteFraction = 0.2) {
   # Validate input columns
   required_cols <- c("NMonth", "GroupID", "GroupLevel", "Numerator", "Denominator", "Metric")
   stopifnot(all(required_cols %in% names(dfAnalyzed)))
+
+  # Identify sparse months (fewer than nMinSiteFraction of peak site count)
+  sparse_months <- GetSparseMonths(dfAnalyzed, nMinSiteFraction)
 
   # Apply gsm.core::Analyze_NormalApprox_PredictBounds to each month's cross-section
   dfAnalyzed %>%
@@ -87,5 +94,8 @@ TimeZScoreFunnel_PredictBounds <- function(dfAnalyzed, vThreshold = c(-3, -2, 2,
       vThreshold = vThreshold,
       strType = "rate"
     ))) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    dplyr::left_join(sparse_months %>% dplyr::select("NMonth", "sparse"), by = "NMonth") %>%
+    dplyr::mutate(Metric = dplyr::if_else(.data$sparse, NA_real_, .data$Metric)) %>%
+    dplyr::select(-"sparse")
 }

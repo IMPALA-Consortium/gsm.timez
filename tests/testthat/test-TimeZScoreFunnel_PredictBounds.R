@@ -90,6 +90,62 @@ test_that("TimeZScoreFunnel_PredictBounds errors on missing columns", {
 })
 
 
+test_that("TimeZScoreFunnel_PredictBounds sets Metric to NA for sparse months", {
+  skip_if_not_installed("gsm.core")
+
+  # 5 sites in months 1-3, only 1 site in month 4 (20% of peak -> sparse)
+  dfTimeline <- data.frame(
+    GroupID = c(
+      "A", "B", "C", "D", "E",
+      "A", "B", "C", "D", "E",
+      "A", "B", "C", "D", "E",
+      "A"
+    ),
+    GroupLevel = "Site",
+    Numerator = rep(10, 16),
+    Denominator = rep(100, 16),
+    DenominatorMonth = as.Date(c(
+      rep("2022-01-01", 5), rep("2022-02-01", 5),
+      rep("2022-03-01", 5), "2022-04-01"
+    )),
+    NMonth = c(rep(1, 5), rep(2, 5), rep(3, 5), 4)
+  )
+
+  dfAnalyzed <- TimeZScoreFunnel(dfTimeline)
+  dfBounds <- TimeZScoreFunnel_PredictBounds(dfAnalyzed, nMinSiteFraction = 0.2)
+
+  expect_true(all(is.na(dfBounds$Metric[dfBounds$NMonth == 4])))
+  expect_true(all(!is.na(dfBounds$Metric[dfBounds$NMonth < 4])))
+})
+
+
+test_that("TimeZScoreFunnel_PredictBounds nMinSiteFraction = 0 disables NA behaviour", {
+  skip_if_not_installed("gsm.core")
+
+  dfTimeline <- data.frame(
+    GroupID = c(
+      "A", "B", "C", "D", "E",
+      "A", "B", "C", "D", "E",
+      "A", "B", "C", "D", "E",
+      "A"
+    ),
+    GroupLevel = "Site",
+    Numerator = rep(10, 16),
+    Denominator = rep(100, 16),
+    DenominatorMonth = as.Date(c(
+      rep("2022-01-01", 5), rep("2022-02-01", 5),
+      rep("2022-03-01", 5), "2022-04-01"
+    )),
+    NMonth = c(rep(1, 5), rep(2, 5), rep(3, 5), 4)
+  )
+
+  dfAnalyzed <- TimeZScoreFunnel(dfTimeline)
+  dfBounds <- TimeZScoreFunnel_PredictBounds(dfAnalyzed, nMinSiteFraction = 0)
+
+  expect_true(all(!is.na(dfBounds$Metric)))
+})
+
+
 test_that("TimeZScoreFunnel_PredictBounds output for single month matches direct gsm.core call", {
   skip_if_not_installed("gsm.core")
 
@@ -131,7 +187,7 @@ test_that("TimeZScoreFunnel_PredictBounds works with clindata", {
       dfSubjects = clindata::rawplus_dm,
       dfNumerator = clindata::rawplus_ae,
       dfDenominator = clindata::rawplus_visdt %>% dplyr::mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d")),
-      strGroupCol = "siteid",
+      strGroupCol = "invid",
       strSubjectCol = "subjid",
       strNumeratorDateCol = "aest_dt",
       strDenominatorDateCol = "visit_dt"

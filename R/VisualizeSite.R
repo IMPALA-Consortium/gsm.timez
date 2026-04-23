@@ -8,6 +8,10 @@
 #'   (set by `gsm.timez::Flag()`).
 #' @param strSiteID Character string specifying the site ID to highlight.
 #'   Must exist in `dfFlagged$GroupID`.
+#' @param dfBounds Optional. A data frame with pre-calculated funnel bounds from
+#'   \code{\link{TimeZScoreFunnel_PredictBounds}}. If provided, inner threshold
+#'   lines are drawn for the selected site based on its denominator at each month.
+#'   If NULL (default), no bounds are shown.
 #'
 #' @return A ggplot2 object showing:
 #'   \itemize{
@@ -50,7 +54,7 @@
 #'   dfSubjects = dfSubjects,
 #'   dfNumerator = dfNumerator,
 #'   dfDenominator = dfDenominator,
-#'   strGroupCol = "siteid",
+#'   strGroupCol = "invid",
 #'   strSubjectCol = "subjid",
 #'   strNumeratorDateCol = "aest_dt",
 #'   strDenominatorDateCol = "visit_dt"
@@ -68,23 +72,24 @@
 #'   head(1)
 #'
 #' # Visualize the site
-#' VisualizeSite(dfFlagged, strSiteID)
+#' VisualizeSite(dfFlagged, strSiteID = strSiteID)
 #' }
 #'
 #' @export
-VisualizeSite <- function(dfFlagged, strSiteID) {
+VisualizeSite <- function(dfFlagged, dfBounds = NULL, strSiteID) {
 
-  # Read flag attribute
-
-vFlag <- attr(dfFlagged, "vFlag")
+  # Read flag attributes
+  vFlag <- sort(attr(dfFlagged, "vFlag"))
   if (is.null(vFlag)) {
     stop("dfFlagged must have 'vFlag' attribute (set by gsm.timez::Flag())")
   }
+  vThreshold <- attr(dfFlagged, "vThreshold")
 
   # Validate strSiteID exists
   if (!strSiteID %in% dfFlagged$GroupID) {
     stop(paste0("Site '", strSiteID, "' not found in dfFlagged$GroupID."))
   }
+
 
   # Prepare data for plotting
   dfPlot <- dfFlagged %>%
@@ -100,6 +105,37 @@ vFlag <- attr(dfFlagged, "vFlag")
 
   dfFlaggedPoints <- dfSelectedSite %>%
     dplyr::filter(.data$Flag != 0)
+  
+  if (!is.null(dfBounds)) {
+    dfSiteDenom <- dfFlagged %>%
+      dplyr::filter(.data$GroupID == strSiteID) %>%
+      dplyr::select("NMonth", "Denominator")
+
+    dfBoundsPlot <- dfBounds %>%
+      dplyr::left_join(
+        dfSiteDenom %>% dplyr::rename(Denominator_site = "Denominator"),
+        by = "NMonth"
+      ) %>%
+      dplyr::group_by(.data$NMonth, .data$Threshold) %>%
+      dplyr::slice_min(abs(.data$Denominator - .data$Denominator_site), n = 1, with_ties = FALSE) %>%
+      dplyr::ungroup() %>%
+      dplyr::select(-"Denominator_site")
+
+    sorted_thresh <- sort(vThreshold)
+    sorted_nonzero_flags <- sort(vFlag[vFlag != 0])
+    threshold_flag_map <- stats::setNames(sorted_nonzero_flags, as.character(sorted_thresh))
+
+    dfAllBoundLines <- dfBoundsPlot %>%
+      dplyr::mutate(Flag = factor(
+        dplyr::if_else(
+          .data$Threshold == 0,
+          0L,
+          threshold_flag_map[as.character(.data$Threshold)]
+        ),
+        levels = vFlag
+      )) %>%
+      dplyr::arrange(match(.data$Flag, vFlag))
+  }
 
   # Build plot
   p <- ggplot2::ggplot(dfPlot, ggplot2::aes(
@@ -118,7 +154,18 @@ vFlag <- attr(dfFlagged, "vFlag")
     )
   }
 
-  # Layer 2: Selected site as dark gray line (slightly thicker)
+  # Layer 2: All bound lines (mean + thresholds) colored by flag, sorted for plotly legend order
+  if (!is.null(dfBounds) && nrow(dfAllBoundLines) > 0) {
+    p <- p + ggplot2::geom_line(
+      data = dfAllBoundLines,
+      ggplot2::aes(x = .data$NMonth, y = .data$Metric,
+                   group = .data$Threshold, color = .data$Flag),
+      linetype = "dashed",
+      inherit.aes = FALSE
+    )
+  }
+
+  # Layer 4: Selected site as dark gray line (on top of bounds)
   p <- p + ggplot2::geom_line(
     data = dfSelectedSite,
     color = "gray30",
@@ -126,7 +173,7 @@ vFlag <- attr(dfFlagged, "vFlag")
     alpha = 0.8
   )
 
-  # Layer 3: Flagged points only (colored dots)
+  # Layer 5: Flagged points only (colored dots)
   if (nrow(dfFlaggedPoints) > 0) {
     p <- p + ggplot2::geom_point(
       data = dfFlaggedPoints,
@@ -136,7 +183,7 @@ vFlag <- attr(dfFlagged, "vFlag")
     )
   }
 
-  # Layer 4: Last point for selected site (shows current status if not flagged)
+  # Layer 5: Last point for selected site (shows current status if not flagged)
   dfLastPoint <- dfSelectedSite %>%
     dplyr::filter(NMonth == max(NMonth)) %>%
     dplyr::filter(Flag == 0)
@@ -150,7 +197,7 @@ vFlag <- attr(dfFlagged, "vFlag")
     )
   }
 
-  # Layer 5: Invisible dummy points for complete legend
+  # Layer 6: Invisible dummy points for complete legend
   dfLegend <- data.frame(
     NMonth = min(dfPlot$NMonth),
     Metric = min(dfPlot$Metric),
@@ -167,6 +214,7 @@ vFlag <- attr(dfFlagged, "vFlag")
   # Color scale (funnel colors - blue-gray-red diverging palette)
   p <- p +
     ggplot2::scale_color_manual(
+      breaks = as.character(vFlag),
       values = stats::setNames(
         grDevices::colorRampPalette(c(
           "#2166AC",

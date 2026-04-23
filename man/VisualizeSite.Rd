@@ -4,12 +4,17 @@
 \alias{VisualizeSite}
 \title{Visualize Single Site Trajectory with Flag Indicators}
 \usage{
-VisualizeSite(dfFlagged, strSiteID)
+VisualizeSite(dfFlagged, dfBounds = NULL, strSiteID)
 }
 \arguments{
 \item{dfFlagged}{A data frame output from Flag() containing columns:
 GroupID, NMonth, Metric, Flag. Must have \code{vFlag} attribute
 (set by \code{gsm.timez::Flag()}).}
+
+\item{dfBounds}{Optional. A data frame with pre-calculated funnel bounds from
+\code{\link{TimeZScoreFunnel_PredictBounds}}. If provided, inner threshold
+lines are drawn for the selected site based on its denominator at each month.
+If NULL (default), no bounds are shown.}
 
 \item{strSiteID}{Character string specifying the site ID to highlight.
 Must exist in \code{dfFlagged$GroupID}.}
@@ -56,7 +61,7 @@ dfFlagged <- Timeline(
   dfSubjects = dfSubjects,
   dfNumerator = dfNumerator,
   dfDenominator = dfDenominator,
-  strGroupCol = "siteid",
+  strGroupCol = "invid",
   strSubjectCol = "subjid",
   strNumeratorDateCol = "aest_dt",
   strDenominatorDateCol = "visit_dt"
@@ -74,7 +79,7 @@ strSiteID <- dfFlagged \%>\%
   head(1)
 
 # Visualize the site
-VisualizeSite(dfFlagged, strSiteID)
+VisualizeSite(dfFlagged, strSiteID = strSiteID)
 }
 
 }

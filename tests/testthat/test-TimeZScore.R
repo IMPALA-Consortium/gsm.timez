@@ -6,7 +6,7 @@ test_that("TimeZScore returns correct column names", {
       dfSubjects = clindata::rawplus_dm,
       dfNumerator = clindata::rawplus_ae,
       dfDenominator = clindata::rawplus_visdt %>% mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d")),
-      strGroupCol = "siteid",
+      strGroupCol = "invid",
       strSubjectCol = "subjid",
       strNumeratorDateCol = "aest_dt",
       strDenominatorDateCol = "visit_dt"
@@ -28,7 +28,7 @@ test_that("TimeZScore works with clindata", {
       dfSubjects = clindata::rawplus_dm,
       dfNumerator = clindata::rawplus_ae,
       dfDenominator = clindata::rawplus_visdt %>% mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d")),
-      strGroupCol = "siteid",
+      strGroupCol = "invid",
       strSubjectCol = "subjid",
       strNumeratorDateCol = "aest_dt",
       strDenominatorDateCol = "visit_dt"

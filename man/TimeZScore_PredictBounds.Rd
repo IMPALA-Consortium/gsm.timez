@@ -4,15 +4,25 @@
 \alias{TimeZScore_PredictBounds}
 \title{Calculate Predicted Bounds for TimeZScore Visualization}
 \usage{
-TimeZScore_PredictBounds(dfAnalyzed, vThreshold = c(-3, -2, 2, 3))
+TimeZScore_PredictBounds(
+  dfAnalyzed,
+  vThreshold = c(-3, -2, 2, 3),
+  nMinSiteFraction = 0.2
+)
 }
 \arguments{
 \item{dfAnalyzed}{A data frame output from \code{\link{TimeZScore}}. Must
-contain columns: \code{NMonth}, \code{metric_mean}, and \code{metric_sd}.}
+contain columns: \code{NMonth}, \code{GroupID}, \code{metric_mean}, and
+\code{metric_sd}.}
 
 \item{vThreshold}{Numeric vector of threshold values for bounds. Default is
 \code{c(-3, -2, 2, 3)}. A threshold of 0 (for the mean line) is
 automatically included.}
+
+\item{nMinSiteFraction}{Minimum fraction of peak site count required to
+return non-\code{NA} bounds for a month. Months where the number of
+distinct \code{GroupID}s is below this fraction of the maximum are
+returned with \code{Metric = NA}. Default is \code{0.2} (20\\%).}
 }
 \value{
 A data frame with columns:

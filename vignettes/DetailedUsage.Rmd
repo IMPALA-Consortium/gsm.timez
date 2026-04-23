@@ -47,8 +47,8 @@ dfDenominator <- clindata::rawplus_visdt %>%
 Let's preview each dataset:
 
 ```{r data-preview}
-# Subjects: key columns are subjid (subject ID) and siteid (site/group)
-knitr::kable(head(dfSubjects[, c("subjid", "siteid", "studyid")], 5))
+# Subjects: key columns are subjid (subject ID) and invid (site/group)
+knitr::kable(head(dfSubjects[, c("subjid", "invid", "studyid")], 5))
 
 # Numerator (AEs): key columns are subjid and aest_dt (AE start date)
 knitr::kable(head(dfNumerator[, c("subjid", "aest_dt")], 5))
@@ -67,7 +67,7 @@ numerator events over sequential months.
 - `dfSubjects`: Data frame with subject IDs and grouping variables
 - `dfNumerator`: Data frame with event records (numerator)
 - `dfDenominator`: Data frame with time point records (denominator)
-- `strGroupCol`: Column name for grouping (e.g., "siteid")
+- `strGroupCol`: Column name for grouping (e.g., "invid")
 - `strSubjectCol`: Column name for subject ID
 - `strNumeratorDateCol`: Date column in numerator data
 - `strDenominatorDateCol`: Date column in denominator data
@@ -79,7 +79,7 @@ dfTimeline <- gsm.timez::Timeline(
   dfSubjects            = dfSubjects,
   dfNumerator           = dfNumerator,
   dfDenominator         = dfDenominator,
-  strGroupCol           = "siteid",
+  strGroupCol           = "invid",
   strSubjectCol         = "subjid",
   strNumeratorDateCol   = "aest_dt",
   strDenominatorDateCol = "visit_dt"
@@ -175,7 +175,7 @@ gsm.timez::VisualizeBoxplot(dfFlagged, nMonths = 1:10)
 The `strGroupCol` parameter allows you to analyze data at different levels. 
 For example, you could group by country instead of site:
 
-```{r different-grouping, eval=FALSE}
+```{r different-grouping}
 # Group by country instead of site
 dfTimelineByCountry <- gsm.timez::Timeline(
   dfSubjects = dfSubjects,
@@ -204,7 +204,7 @@ data frames contain the required columns:
 - A subject ID column (same as `strSubjectCol`)
 - A date column (specified by `strDenominatorDateCol`)
 
-```{r custom-data, eval=FALSE}
+```{r custom-data}
 # Example with custom column names
 my_subjects <- data.frame(
   patient_id = c("P001", "P002", "P003"),
@@ -249,12 +249,12 @@ Key functions include:
 
 The full pipeline from raw data to visualization:
 
-```{r complete-workflow, eval=FALSE}
+```{r complete-workflow}
 gsm.timez::Timeline(
   dfSubjects            = dfSubjects,
   dfNumerator           = dfNumerator,
   dfDenominator         = dfDenominator,
-  strGroupCol           = "siteid",
+  strGroupCol           = "invid",
   strSubjectCol         = "subjid",
   strNumeratorDateCol   = "aest_dt",
   strDenominatorDateCol = "visit_dt"

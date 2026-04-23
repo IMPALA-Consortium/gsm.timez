@@ -35,6 +35,7 @@ steps:
     name: gsm.timez::Widget
     params:
       dfResults: Reporting_Results_allmonths
+      dfBounds: Reporting_Bounds
       strVisualizeFun: "gsm.timez::VisualizeSite"
       strOutputLabel: "Site 0X159"
       strIcon: "magnifying-glass"
@@ -44,6 +45,7 @@ steps:
     name: gsm.timez::Widget
     params:
       dfResults: Reporting_Results_allmonths
+      dfBounds: Reporting_Bounds
       strVisualizeFun: "gsm.timez::VisualizeSite"
       strOutputLabel: "Site 0X153"
       strIcon: "magnifying-glass"

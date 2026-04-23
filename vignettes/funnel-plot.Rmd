@@ -31,7 +31,7 @@ dfTimeline <- Timeline(
   dfSubjects = dfSubjects,
   dfNumerator = dfNumerator,
   dfDenominator = dfDenominator,
-  strGroupCol = "siteid",
+  strGroupCol = "invid",
   strSubjectCol = "subjid",
   strNumeratorDateCol = "aest_dt",
   strDenominatorDateCol = "visit_dt"
@@ -73,7 +73,7 @@ strSiteID_overreporting <- dfFlagged %>%
   dplyr::pull(GroupID) %>%
   head(1)
 
-VisualizeSite(dfFlagged, strSiteID_overreporting)
+VisualizeSite(dfFlagged, strSiteID = strSiteID_overreporting)
 ```
 
 ```{r visualize-site-underreporting, fig.width=8, fig.height=6}
@@ -87,7 +87,7 @@ strSiteID_underreporting <- dfFlagged %>%
   dplyr::pull(GroupID) %>%
   head(1)
 
-VisualizeSite(dfFlagged, strSiteID_underreporting)
+VisualizeSite(dfFlagged, strSiteID = strSiteID_underreporting)
 ```
 
 ```{r visualize-site-recovered-overreporting, fig.width=8, fig.height=6}
@@ -102,7 +102,7 @@ strSiteID_recovered_overreporting <- dfFlagged %>%
   dplyr::pull(GroupID) %>%
   head(1)
 
-VisualizeSite(dfFlagged, strSiteID_recovered_overreporting)
+VisualizeSite(dfFlagged, strSiteID = strSiteID_recovered_overreporting)
 ```
 
 ```{r visualize-site-recovered-underreporting, fig.width=8, fig.height=6}
@@ -117,5 +117,5 @@ strSiteID_recovered_underreporting <- dfFlagged %>%
   dplyr::pull(GroupID) %>%
   head(1)
 
-VisualizeSite(dfFlagged, strSiteID_recovered_underreporting)
+VisualizeSite(dfFlagged, strSiteID = strSiteID_recovered_underreporting)
 ```

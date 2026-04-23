@@ -5,10 +5,15 @@
 #' The bounds are used for visualization in \code{\link{Visualize}}.
 #'
 #' @param dfAnalyzed A data frame output from \code{\link{TimeZScore}}. Must
-#'   contain columns: \code{NMonth}, \code{metric_mean}, and \code{metric_sd}.
+#'   contain columns: \code{NMonth}, \code{GroupID}, \code{metric_mean}, and
+#'   \code{metric_sd}.
 #' @param vThreshold Numeric vector of threshold values for bounds. Default is
 #'   \code{c(-3, -2, 2, 3)}. A threshold of 0 (for the mean line) is
 #'   automatically included.
+#' @param nMinSiteFraction Minimum fraction of peak site count required to
+#'   return non-\code{NA} bounds for a month. Months where the number of
+#'   distinct \code{GroupID}s is below this fraction of the maximum are
+#'   returned with \code{Metric = NA}. Default is \code{0.2} (20\%).
 #'
 #' @return A data frame with columns:
 #'   \itemize{
@@ -64,13 +69,16 @@
 #' dfBounds <- TimeZScore_PredictBounds(dfAnalyzed)
 #'
 #' @export
-TimeZScore_PredictBounds <- function(dfAnalyzed, vThreshold = c(-3, -2, 2, 3)) {
+TimeZScore_PredictBounds <- function(dfAnalyzed, vThreshold = c(-3, -2, 2, 3), nMinSiteFraction = 0.2) {
   # Validate input columns
- required_cols <- c("NMonth", "metric_mean", "metric_sd")
+  required_cols <- c("NMonth", "GroupID", "metric_mean", "metric_sd")
   stopifnot(all(required_cols %in% names(dfAnalyzed)))
 
   # Include 0 threshold for mean line if not already present
   all_thresholds <- sort(unique(c(vThreshold, 0)))
+
+  # Identify sparse months (fewer than nMinSiteFraction of peak site count)
+  sparse_months <- GetSparseMonths(dfAnalyzed, nMinSiteFraction)
 
   # Get unique NMonth with their stats and expand to all thresholds
   dfAnalyzed %>%
@@ -79,6 +87,8 @@ TimeZScore_PredictBounds <- function(dfAnalyzed, vThreshold = c(-3, -2, 2, 3)) {
     dplyr::mutate(
       Metric = .data$metric_mean + .data$Threshold * .data$metric_sd
     ) %>%
+    dplyr::left_join(sparse_months %>% dplyr::select("NMonth", "sparse"), by = "NMonth") %>%
+    dplyr::mutate(Metric = dplyr::if_else(.data$sparse, NA_real_, .data$Metric)) %>%
     dplyr::select("NMonth", "Threshold", "Metric") %>%
     dplyr::arrange(.data$NMonth, .data$Threshold)
 }

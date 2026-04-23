@@ -54,7 +54,7 @@ dfTimeline <- Timeline(
   dfSubjects = dfSubjects,
   dfNumerator = dfNumerator,
   dfDenominator = dfDenominator,
-  strGroupCol = "siteid",
+  strGroupCol = "invid",
   strSubjectCol = "subjid",
   strNumeratorDateCol = "aest_dt",
   strDenominatorDateCol = "visit_dt"
