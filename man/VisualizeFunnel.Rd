@@ -16,8 +16,9 @@ GroupID, NMonth, and Flag. Must also have \code{vFlag} attribute
 A ggplot2 heat map object with:
 \itemize{
 \item X-axis: Time (NMonth)
-\item Y-axis: Sites (GroupID), sorted numerically if IDs are numeric,
-otherwise alphabetically
+\item Y-axis: Sites (GroupID), sorted so sites flagged in the most recent
+month appear at the top, with ties broken by total number of flagged
+months (descending), then by GroupID
 \item Fill color: Flag category (Much Lower, Lower, Within Limits,
 Higher, Much Higher)
 }

@@ -11,8 +11,9 @@
 #' @return A ggplot2 heat map object with:
 #'   \itemize{
 #'     \item X-axis: Time (NMonth)
-#'     \item Y-axis: Sites (GroupID), sorted numerically if IDs are numeric,
-#'       otherwise alphabetically
+#'     \item Y-axis: Sites (GroupID), sorted so sites flagged in the most recent
+#'       month appear at the top, with ties broken by total number of flagged
+#'       months (descending), then by GroupID
 #'     \item Fill color: Flag category (Much Lower, Lower, Within Limits,
 #'       Higher, Much Higher)
 #'   }
@@ -79,25 +80,35 @@ VisualizeFunnel <- function(dfFlagged) {
   vFlag <- attr(dfFlagged, "vFlag")
 
 
-# ============================================================================
-# TEMPORARY: Limit to 30 sites for faster plotly generation during testing.
-# ============================================================================
-  vSiteIDs <- head(unique(dfFlagged$GroupID), 30)
-  dfFlagged <- dfFlagged %>% dplyr::filter(.data$GroupID %in% vSiteIDs)
-
   # Prepare data for plotting
   dfPlot <- dfFlagged %>%
     dplyr::select("GroupID", "NMonth", "Flag") %>%
     dplyr::mutate(Flag = factor(.data$Flag, levels = vFlag))
 
-  # Sort groups numerically if possible, otherwise alphabetically
-  vGroups <- unique(dfPlot$GroupID)
-  vGroupsNumeric <- suppressWarnings(as.numeric(vGroups))
-  if (all(!is.na(vGroupsNumeric))) {
-    vGroups <- vGroups[order(vGroupsNumeric)]
-  } else {
-    vGroups <- sort(vGroups)
-  }
+  # Sort sites: flagged in last evaluated month first, then by total flagged months.
+  # Use nLastValidMonth (last month where ≥20% threshold was met) as the reference,
+  # since months after that threshold have NA flags.
+  flag_int_all <- as.integer(as.character(dfPlot$Flag))
+  nLastValidMonth <- max(dfPlot$NMonth[!is.na(flag_int_all)])
+
+  dfSortKeys <- dfPlot %>%
+    dplyr::mutate(flag_int = as.integer(as.character(.data$Flag))) %>%
+    dplyr::group_by(.data$GroupID) %>%
+    dplyr::summarise(
+      last_flagged = as.integer(any(
+        .data$NMonth == nLastValidMonth & !is.na(.data$flag_int) & .data$flag_int != 0
+      )),
+      n_flagged = sum(!is.na(.data$flag_int) & .data$flag_int != 0),
+      .groups = "drop"
+    ) %>%
+    dplyr::arrange(dplyr::desc(.data$last_flagged), dplyr::desc(.data$n_flagged), .data$GroupID)
+  vGroups <- dfSortKeys$GroupID
+
+# ============================================================================
+# TEMPORARY: Limit to 30 sites for faster plotly generation during testing.
+# ============================================================================
+  vGroups <- head(vGroups, 30)
+  dfPlot <- dfPlot %>% dplyr::filter(.data$GroupID %in% vGroups)
 
   # Build heat map
   p <- ggplot2::ggplot(dfPlot, ggplot2::aes(
@@ -122,6 +133,7 @@ VisualizeFunnel <- function(dfFlagged) {
         as.character(vFlag),
         as.character(vFlag)
       ),
+      na.value = "#E8E8E8",
       drop = FALSE
     ) +
     ggplot2::labs(
