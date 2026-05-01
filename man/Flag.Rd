@@ -25,7 +25,7 @@ Default: \code{c(-3, -2, 2, 3)}.}
 \item{nMinSiteFraction}{Minimum fraction of peak site count required to
 return a non-\code{NA} flag for a month. Months where the number of distinct
 \code{GroupID}s is below this fraction of the maximum are returned with
-\code{Flag = NA}. Default is \code{0.2} (20\\%), matching \code{\link[=TimeZScore_PredictBounds]{TimeZScore_PredictBounds()}}.
+\code{Flag = NA}. Default is \code{0.2} (20\\%), matching \code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}}.
 Set to \code{0} to disable sparse-month masking.}
 
 \item{...}{Additional arguments passed to \code{gsm.core::Flag()}.}
@@ -38,13 +38,13 @@ Set to \code{0} to disable sparse-month masking.}
 Wrapper around \code{gsm.core::Flag()}. Adds a Flag column to analyzed data
 identifying possible statistical outliers based on threshold comparisons.
 Also stores \code{vThreshold} and \code{vFlag} as attributes for downstream use
-by \code{Visualize()} (for bounds and legend).
+by downstream visualization functions.
 
 Months where the number of distinct sites falls below \code{nMinSiteFraction}
 of the peak site count are considered statistically unreliable and have
 their \code{Flag} set to \code{NA}, consistent with the \code{NA} bounds returned by
-\code{\link[=TimeZScore_PredictBounds]{TimeZScore_PredictBounds()}} for the same months.
+\code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}} for the same months.
 }
 \seealso{
-\code{\link[gsm.core:Flag]{gsm.core::Flag()}}, \code{\link[=TimeZScore_PredictBounds]{TimeZScore_PredictBounds()}}
+\code{\link[gsm.core:Flag]{gsm.core::Flag()}}, \code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}}
 }

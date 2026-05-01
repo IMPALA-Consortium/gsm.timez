@@ -1,4 +1,4 @@
-# Tests for VisualizeFunnel function (heat map implementation)
+# Tests for Visualize_Heatmap function (heat map implementation)
 
 # Helper to create test data using funnel scoring
 create_flagged_funnel_data <- function() {
@@ -32,89 +32,89 @@ create_flagged_funnel_data <- function() {
     strNumeratorDateCol = "EventDate",
     strDenominatorDateCol = "VisitDate"
   ) %>%
-    TimeZScoreFunnel() %>%
+    Analyze_TimeZFunnel() %>%
     Flag()
 
   dfFlagged
 }
 
 
-test_that("VisualizeFunnel returns a ggplot object", {
+test_that("Visualize_Heatmap returns a ggplot object", {
   skip_if_not_installed("gsm.core")
 
   dfFlagged <- create_flagged_funnel_data()
-  result <- VisualizeFunnel(dfFlagged)
+  result <- Visualize_Heatmap(dfFlagged)
 
   expect_s3_class(result, "ggplot")
 })
 
 
-test_that("VisualizeFunnel plot can be built without errors", {
+test_that("Visualize_Heatmap plot can be built without errors", {
   skip_if_not_installed("gsm.core")
 
   dfFlagged <- create_flagged_funnel_data()
-  result <- VisualizeFunnel(dfFlagged)
+  result <- Visualize_Heatmap(dfFlagged)
 
   expect_no_error(ggplot2::ggplot_build(result))
 })
 
 
-test_that("VisualizeFunnel contains GeomTile layer", {
+test_that("Visualize_Heatmap contains GeomTile layer", {
   skip_if_not_installed("gsm.core")
 
   dfFlagged <- create_flagged_funnel_data()
-  result <- VisualizeFunnel(dfFlagged)
+  result <- Visualize_Heatmap(dfFlagged)
 
   layer_classes <- sapply(result$layers, function(x) class(x$geom)[1])
   expect_true("GeomTile" %in% layer_classes)
 })
 
 
-test_that("VisualizeFunnel uses GroupID on x-axis and NMonth on y-axis", {
+test_that("Visualize_Heatmap uses NMonth on x-axis and GroupID on y-axis", {
   skip_if_not_installed("gsm.core")
 
   dfFlagged <- create_flagged_funnel_data()
-  result <- VisualizeFunnel(dfFlagged)
+  result <- Visualize_Heatmap(dfFlagged)
 
-  expect_true(grepl("GroupID", deparse(result$mapping$x)))
-  expect_true(grepl("NMonth", deparse(result$mapping$y)))
+  expect_true(grepl("NMonth", deparse(result$mapping$x)))
+  expect_true(grepl("GroupID", deparse(result$mapping$y)))
 })
 
 
-test_that("VisualizeFunnel uses Flag for fill color", {
+test_that("Visualize_Heatmap uses Flag for fill color", {
   skip_if_not_installed("gsm.core")
 
   dfFlagged <- create_flagged_funnel_data()
-  result <- VisualizeFunnel(dfFlagged)
+  result <- Visualize_Heatmap(dfFlagged)
 
   expect_true(grepl("Flag", deparse(result$mapping$fill)))
 })
 
 
-test_that("VisualizeFunnel converts Flag to factor with correct levels", {
+test_that("Visualize_Heatmap converts Flag to factor with correct levels", {
   skip_if_not_installed("gsm.core")
 
   dfFlagged <- create_flagged_funnel_data()
-  result <- VisualizeFunnel(dfFlagged)
+  result <- Visualize_Heatmap(dfFlagged)
 
   expect_s3_class(result$data$Flag, "factor")
   expect_equal(levels(result$data$Flag), c("-2", "-1", "0", "1", "2"))
 })
 
 
-test_that("VisualizeFunnel has reversed y-axis (time flows down)", {
+test_that("Visualize_Heatmap has reversed y-axis (time flows down)", {
   skip_if_not_installed("gsm.core")
 
   dfFlagged <- create_flagged_funnel_data()
-  result <- VisualizeFunnel(dfFlagged)
+  result <- Visualize_Heatmap(dfFlagged)
   built <- ggplot2::ggplot_build(result)
 
-  # Check that y-axis is reversed (trans should be "reverse")
-  expect_equal(built$layout$panel_scales_y[[1]]$trans$name, "reverse")
+  y_limits <- built$layout$panel_scales_y[[1]]$limits
+  expect_equal(y_limits, rev(sort(unique(dfFlagged$GroupID))))
 })
 
 
-test_that("VisualizeFunnel works with clindata", {
+test_that("Visualize_Heatmap works with clindata", {
   skip_if_not_installed("gsm.core")
   skip_if_not_installed("clindata")
 
@@ -129,10 +129,10 @@ test_that("VisualizeFunnel works with clindata", {
       strDenominatorDateCol = "visit_dt"
     )
 
-  dfAnalyzed <- TimeZScoreFunnel(dfTimeline)
+  dfAnalyzed <- Analyze_TimeZFunnel(dfTimeline)
   dfFlagged <- Flag(dfAnalyzed)
 
-  result <- VisualizeFunnel(dfFlagged)
+  result <- Visualize_Heatmap(dfFlagged)
 
   expect_s3_class(result, "ggplot")
   expect_no_error(ggplot2::ggplot_build(result))

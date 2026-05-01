@@ -4,7 +4,7 @@
 \name{gsm.timez-package}
 \alias{gsm.timez}
 \alias{gsm.timez-package}
-\title{gsm.timez: What the Package Does (One Line, Title Case)}
+\title{gsm.timez: gsm.timez - Timeline Z-Score Funnel Analysis GSM Extension}
 \description{
 What the package does (one paragraph).
 }

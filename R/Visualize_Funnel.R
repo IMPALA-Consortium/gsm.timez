@@ -5,10 +5,10 @@
 #' by their Flag value, with flagged sites labeled.
 #'
 #' @param dfFlagged A data frame output from \code{\link{Flag}} applied to
-#'   \code{\link{TimeZScoreFunnel}} output. Must contain columns:
+#'   \code{\link{Analyze_TimeZFunnel}} output. Must contain columns:
 #'   \code{GroupID}, \code{NMonth}, \code{Denominator}, \code{Metric}, \code{Flag}.
 #'   Must have \code{vFlag} attribute (set by \code{gsm.timez::Flag()}).
-#' @param dfBounds A data frame output from \code{\link{TimeZScoreFunnel_PredictBounds}}.
+#' @param dfBounds A data frame output from \code{\link{PredictBounds_TimeZFunnel}}.
 #'   Must contain columns: \code{NMonth}, \code{Threshold}, \code{Denominator},
 #'   \code{Metric}.
 #' @param NMonth Optional integer specifying which month to plot. If \code{NULL}
@@ -28,45 +28,12 @@
 #' Metric. Funnel curves narrow as Denominator increases, reflecting the
 #' expectation that larger sites have less variability.
 #'
-#' @seealso \code{\link{TimeZScoreFunnel}} for calculating funnel scores,
-#'   \code{\link{TimeZScoreFunnel_PredictBounds}} for calculating bounds,
-#'   \code{\link{VisualizeFunnel}} for the heat map visualization across all months.
-#'
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#'
-#' # Prepare data
-#' dfSubjects <- clindata::rawplus_dm
-#' dfNumerator <- clindata::rawplus_ae
-#' dfDenominator <- clindata::rawplus_visdt %>%
-#'   mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d"))
-#'
-#' # Run pipeline
-#' dfTimeline <- Timeline(
-#'   dfSubjects = dfSubjects,
-#'   dfNumerator = dfNumerator,
-#'   dfDenominator = dfDenominator,
-#'   strGroupCol = "invid",
-#'   strSubjectCol = "subjid",
-#'   strNumeratorDateCol = "aest_dt",
-#'   strDenominatorDateCol = "visit_dt"
-#' )
-#'
-#' dfAnalyzed <- dfTimeline %>% TimeZScoreFunnel()
-#' dfFlagged <- dfAnalyzed %>% Flag(vThreshold = c(-1.5, -1, 2, 3))
-#' dfBounds <- TimeZScoreFunnel_PredictBounds(dfAnalyzed, vThreshold = c(-1.5, -1, 2, 3))
-#'
-#' # Plot default month (largest with >= 75% site coverage)
-#' VisualizeFunnelPlot(dfFlagged, dfBounds)
-#'
-#' # Plot specific month
-#' VisualizeFunnelPlot(dfFlagged, dfBounds, NMonth = 12)
-#' }
-#'
+#' @seealso \code{\link{Analyze_TimeZFunnel}} for calculating funnel scores,
+#'   \code{\link{PredictBounds_TimeZFunnel}} for calculating bounds,
+#'   \code{\link{Visualize_Heatmap}} for the heat map visualization across all months.
+#' 
 #' @export
-VisualizeFunnelPlot <- function(dfFlagged, dfBounds, NMonth = NULL) {
-
+Visualize_Funnel <- function(dfFlagged, dfBounds, NMonth = NULL) {
   # Read flag attribute
 
   vFlag <- attr(dfFlagged, "vFlag")

@@ -14,10 +14,4 @@ navbar:
   components:
     sample-reports:
       text: Sample Reports
-      menu:
-        - text: "Empirical Z-Score"
-          href: articles/kri_report.html
-        - text: "Funnel Method"
-          href: articles/kri_report_funnel.html
-        - text: "Funnel Methods CUSTOM"
-          href: articles/kri_report_funnel_custom.html
+      href: articles/Report_TimeZFunnel.html

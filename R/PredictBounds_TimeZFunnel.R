@@ -1,11 +1,11 @@
-#' Calculate Predicted Bounds for TimeZScoreFunnel Visualization
+#' Calculate Predicted Bounds for Analyze_TimeZFunnel Visualization
 #'
 #' This function calculates predicted Metric bounds for each month based on
-#' the Poisson-based funnel plot methodology from \code{\link{TimeZScoreFunnel}}.
+#' the Poisson-based funnel plot methodology from \code{\link{Analyze_TimeZFunnel}}.
 #' It applies \code{gsm.core::Analyze_NormalApprox_PredictBounds} to each month's
 #' cross-section, producing full funnel bounds data per month.
 #'
-#' @param dfAnalyzed A data frame output from \code{\link{TimeZScoreFunnel}}.
+#' @param dfAnalyzed A data frame output from \code{\link{Analyze_TimeZFunnel}}.
 #'   Must contain columns: \code{NMonth}, \code{GroupID}, \code{GroupLevel},
 #'   \code{Numerator}, \code{Denominator}, and \code{Metric}.
 #' @param vThreshold Numeric vector of threshold values for bounds. Default is
@@ -14,7 +14,7 @@
 #' @param nMinSiteFraction Minimum fraction of peak site count required to
 #'   return non-\code{NA} bounds for a month. Months where the number of
 #'   distinct \code{GroupID}s is below this fraction of the maximum are
-#'   returned with \code{Metric = NA}. Default is \code{0.2} (20\%).
+#'   returned with \code{Metric = NA}. Default is \code{0.2} (20%).
 #'
 #' @return A data frame with columns:
 #'   \itemize{
@@ -31,54 +31,18 @@
 #' @details
 #' This function applies \code{gsm.core::Analyze_NormalApprox_PredictBounds()}
 #' to each month's cross-section using \code{group_modify()}, mirroring the
-#' pattern used in \code{\link{TimeZScoreFunnel}}.
+#' pattern used in \code{\link{Analyze_TimeZFunnel}}.
 #'
 #' For each NMonth, filtering the output to that month gives a complete set
 #' of funnel bounds that can be used to create a traditional funnel plot
 #' (Metric vs Denominator).
 #'
-#' @seealso \code{\link{TimeZScoreFunnel}} for calculating funnel scores,
+#' @seealso \code{\link{Analyze_TimeZFunnel}} for calculating funnel scores,
 #'   \code{gsm.core::Analyze_NormalApprox_PredictBounds} for the underlying
 #'   bounds calculation.
-#'
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#' dfSubjects <- data.frame(
-#'   SubjectID = c(1, 2, 3, 4),
-#'   SiteID = c("A", "A", "B", "B")
-#' )
-#' dfNumerator <- data.frame(
-#'   SubjectID = c(1, 1, 2, 3, 4, 4, 4),
-#'   EventDate = as.Date(c(
-#'     "2022-01-01", "2022-01-15", "2022-02-01",
-#'     "2022-01-10", "2022-01-05", "2022-01-20", "2022-02-01"
-#'   ))
-#' )
-#' dfDenominator <- data.frame(
-#'   SubjectID = c(1, 1, 2, 2, 3, 3, 4, 4),
-#'   VisitDate = as.Date(c(
-#'     "2022-01-01", "2022-01-20", "2022-01-01", "2022-02-01",
-#'     "2022-01-01", "2022-01-15", "2022-01-01", "2022-02-01"
-#'   ))
-#' )
-#'
-#' dfAnalyzed <- Timeline(
-#'   dfSubjects = dfSubjects,
-#'   dfNumerator = dfNumerator,
-#'   dfDenominator = dfDenominator,
-#'   strGroupCol = "SiteID",
-#'   strSubjectCol = "SubjectID",
-#'   strNumeratorDateCol = "EventDate",
-#'   strDenominatorDateCol = "VisitDate"
-#' ) %>%
-#'   TimeZScoreFunnel()
-#'
-#' dfBounds <- TimeZScoreFunnel_PredictBounds(dfAnalyzed)
-#' }
-#'
+#' 
 #' @export
-TimeZScoreFunnel_PredictBounds <- function(dfAnalyzed, vThreshold = c(-3, -2, 2, 3), nMinSiteFraction = 0.2) {
+PredictBounds_TimeZFunnel <- function(dfAnalyzed, vThreshold = c(-3, -2, 2, 3), nMinSiteFraction = 0.2) {
   # Validate input columns
   required_cols <- c("NMonth", "GroupID", "GroupLevel", "Numerator", "Denominator", "Metric")
   stopifnot(all(required_cols %in% names(dfAnalyzed)))

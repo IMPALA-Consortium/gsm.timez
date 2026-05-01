@@ -1,6 +1,6 @@
 meta:
   Type: Module
-  ID: TimelineFunnelCustom
+  ID: Report_TimeZFunnel
   Description: Generate timeline KRI HTML report with funnel-based visualizations using custom template
 
 steps:
@@ -12,21 +12,21 @@ steps:
       dfGroups: Reporting_Groups
       dfBounds: ~
 
-  - output: lChartsVisualizeFunnel
+  - output: lChartsVisualize_Heatmap
     name: gsm.timez::Widget
     params:
       dfResults: Reporting_Results_allmonths
-      strVisualizeFun: "gsm.timez::VisualizeFunnel"
+      strVisualizeFun: "gsm.timez::Visualize_Heatmap"
       strOutputLabel: "Funnel Heatmap"
       strIcon: "th"
       bInteractive: true
 
-  - output: lChartsVisualizeFunnelPlot
+  - output: lChartsVisualize_Funnel
     name: gsm.timez::Widget
     params:
       dfResults: Reporting_Results_allmonths
       dfBounds: Reporting_Bounds
-      strVisualizeFun: "gsm.timez::VisualizeFunnelPlot"
+      strVisualizeFun: "gsm.timez::Visualize_Funnel"
       strOutputLabel: "Funnel Plot"
       strIcon: "bullseye"
       bInteractive: true
@@ -36,7 +36,7 @@ steps:
     params:
       dfResults: Reporting_Results_allmonths
       dfBounds: Reporting_Bounds
-      strVisualizeFun: "gsm.timez::VisualizeSite"
+      strVisualizeFun: "gsm.timez::Visualize_Site"
       strOutputLabel: "Site 0X159"
       strIcon: "magnifying-glass"
       strSiteID: "0X159"
@@ -46,22 +46,22 @@ steps:
     params:
       dfResults: Reporting_Results_allmonths
       dfBounds: Reporting_Bounds
-      strVisualizeFun: "gsm.timez::VisualizeSite"
+      strVisualizeFun: "gsm.timez::Visualize_Site"
       strOutputLabel: "Site 0X153"
       strIcon: "magnifying-glass"
       strSiteID: "0X153"
 
   - output: lCharts
-    name: gsm.timez::MergeChartLists
+    name: gsm.timez::Merge_ChartLists
     params:
       lChartsDefault: lChartsDefault
-      lChartsVisualizeFunnel: lChartsVisualizeFunnel
-      lChartsVisualizeFunnelPlot: lChartsVisualizeFunnelPlot
+      lChartsVisualize_Heatmap: lChartsVisualize_Heatmap
+      lChartsVisualize_Funnel: lChartsVisualize_Funnel
       lChartsSite0X159: lChartsSite0X159
       lChartsSite0X153: lChartsSite0X153
 
   - output: strReportPath
-    name: gsm.timez::Report_KRI_Custom
+    name: gsm.timez::Report_TimeZFunnel
     params:
       lCharts: lCharts
       dfResults: Reporting_Results

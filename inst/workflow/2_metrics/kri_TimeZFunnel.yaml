@@ -1,18 +1,18 @@
 meta:
   Type: Analysis
-  ID: kri_timez
-  Name: Cumulative AE Timeline
-  Description: Site-level cumulative adverse event timeline with z-score flagging
+  ID: kri_TimeZFunnel
+  Name: Cumulative AE Timeline (Funnel)
+  Description: Site-level cumulative adverse event timeline with funnel-based z-score flagging
   Status: Pilot
   GroupLevel: Site
-  Abbreviation: TIMEZ
+  Abbreviation: TIMEZF
   Metric: Cumulative AE Rate Over Time
   Numerator: Cumulative Adverse Events
   Denominator: Cumulative Visits
   AnalysisType: cumulative rate
-  Model: Cumulative Z-Score
+  Model: Funnel Z-Score
   Score: Z-Score
-  Threshold: "-2,-1,1,2"
+  Threshold: "-1.5,-1,2,3"
 
 spec:
   Mapped_SUBJ:
@@ -49,7 +49,7 @@ steps:
       strDenominatorDateCol: visit_dt
 
   - output: Analysis_Analyzed
-    name: gsm.timez::TimeZScore
+    name: gsm.timez::Analyze_TimeZFunnel
     params:
       dfTimeline: Analysis_Timeline
 
@@ -59,10 +59,15 @@ steps:
       dfAnalyzed: Analysis_Analyzed
       vThreshold: vThreshold
 
+  - output: Analysis_Bounds
+    name: gsm.timez::PredictBounds_TimeZFunnel
+    params:
+      dfAnalyzed: Analysis_Analyzed
+      vThreshold: vThreshold
+
   - output: lAnalysis
     name: list
     params:
       ID: ID
-      # Timeline: Analysis_Timeline # can use just the last one.
-      # Analyzed: Analysis_Analyzed # can use just the last one.
       Flagged: Analysis_Flagged
+      Bounds: Analysis_Bounds

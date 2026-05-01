@@ -39,7 +39,7 @@ dfTimeline <- Timeline(
 ```
 
 ```{r analyze}
-dfAnalyzed <- dfTimeline %>% TimeZScoreFunnel()
+dfAnalyzed <- dfTimeline %>% Analyze_TimeZFunnel()
 ```
 
 ```{r flag}
@@ -47,19 +47,19 @@ dfFlagged <- dfAnalyzed %>% Flag(vThreshold = c(-1.5, -1, 2, 3))
 ```
 
 ```{r bounds}
-dfBounds <- TimeZScoreFunnel_PredictBounds(dfAnalyzed, vThreshold = c(-1.5, -1, 2, 3))
+dfBounds <- PredictBounds_TimeZFunnel(dfAnalyzed, vThreshold = c(-1.5, -1, 2, 3))
 ```
 
 ```{r visualize, fig.width=10, fig.height=12}
-VisualizeFunnel(dfFlagged)
+Visualize_Heatmap(dfFlagged)
 ```
 
 ```{r funnel-plot-last, fig.width=8, fig.height=6}
-VisualizeFunnelPlot(dfFlagged, dfBounds)
+Visualize_Funnel(dfFlagged, dfBounds)
 ```
 
 ```{r funnel-plot-early, fig.width=8, fig.height=6}
-VisualizeFunnelPlot(dfFlagged, dfBounds, NMonth = 12)
+Visualize_Funnel(dfFlagged, dfBounds, NMonth = 12)
 ```
 
 ```{r visualize-site-overreporting, fig.width=8, fig.height=6}
@@ -73,7 +73,7 @@ strSiteID_overreporting <- dfFlagged %>%
   dplyr::pull(GroupID) %>%
   head(1)
 
-VisualizeSite(dfFlagged, strSiteID = strSiteID_overreporting)
+Visualize_Site(dfFlagged, strSiteID = strSiteID_overreporting)
 ```
 
 ```{r visualize-site-underreporting, fig.width=8, fig.height=6}
@@ -87,7 +87,7 @@ strSiteID_underreporting <- dfFlagged %>%
   dplyr::pull(GroupID) %>%
   head(1)
 
-VisualizeSite(dfFlagged, strSiteID = strSiteID_underreporting)
+Visualize_Site(dfFlagged, strSiteID = strSiteID_underreporting)
 ```
 
 ```{r visualize-site-recovered-overreporting, fig.width=8, fig.height=6}
@@ -102,7 +102,7 @@ strSiteID_recovered_overreporting <- dfFlagged %>%
   dplyr::pull(GroupID) %>%
   head(1)
 
-VisualizeSite(dfFlagged, strSiteID = strSiteID_recovered_overreporting)
+Visualize_Site(dfFlagged, strSiteID = strSiteID_recovered_overreporting)
 ```
 
 ```{r visualize-site-recovered-underreporting, fig.width=8, fig.height=6}
@@ -117,5 +117,5 @@ strSiteID_recovered_underreporting <- dfFlagged %>%
   dplyr::pull(GroupID) %>%
   head(1)
 
-VisualizeSite(dfFlagged, strSiteID = strSiteID_recovered_underreporting)
+Visualize_Site(dfFlagged, strSiteID = strSiteID_recovered_underreporting)
 ```

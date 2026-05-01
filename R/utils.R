@@ -1,9 +1,8 @@
 #' Get Sparse Months
 #'
 #' @param df A data frame containing at minimum columns `NMonth` (month index)
-#'   and `GroupID` (site identifier). Typically the output of [TimeZScore()] or
-#'   the `dfAnalyzed` argument passed to [TimeZScore_PredictBounds()] /
-#'   [TimeZScoreFunnel_PredictBounds()].
+#'   and `GroupID` (site identifier). Typically the output of [Analyze_TimeZFunnel()]
+#'   or the `dfAnalyzed` argument passed to [PredictBounds_TimeZFunnel()].
 #' @param nMinSiteFraction Minimum fraction of peak site count; months below
 #'   this fraction are marked sparse.
 #' @return A data frame with columns `NMonth` and `sparse` (logical).

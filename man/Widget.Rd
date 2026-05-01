@@ -19,7 +19,7 @@ Widget(
 Reporting_Results_allmonths from \code{\link[gsm.reporting:BindResults]{gsm.reporting::BindResults()}}.}
 
 \item{strVisualizeFun}{Character string specifying the visualization function
-to apply, including namespace (e.g., "gsm.timez::Visualize").}
+to apply, including namespace (e.g., "gsm.timez::Visualize_Heatmap").}
 
 \item{strOutputLabel}{Character string for the chart tab label in the report
 (e.g., "Timeline", "Distribution").}
@@ -36,7 +36,7 @@ visualizations with many elements (e.g., heatmaps).}
 \code{Reporting_Bounds}). When provided, it is filtered to the current
 MetricID and passed as the second positional argument to the visualization
 function, before \code{...}. Use this for functions like
-\code{\link{VisualizeFunnelPlot}} that require a separate bounds data frame.}
+\code{\link{Visualize_Funnel}} that require a separate bounds data frame.}
 
 \item{...}{Additional arguments passed to the visualization function.}
 }
@@ -46,5 +46,5 @@ A named list of plotly htmlwidget objects, keyed by MetricID.
 \description{
 Creates charts for each metric by applying a visualization function to
 stacked results data. The visualization function is specified as a string
-(e.g., "gsm.timez::Visualize") and resolved at runtime.
+(e.g., "gsm.timez::Visualize_Heatmap") and resolved at runtime.
 }

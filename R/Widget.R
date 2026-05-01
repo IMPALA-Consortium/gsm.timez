@@ -2,12 +2,12 @@
 #'
 #' Creates charts for each metric by applying a visualization function to
 #' stacked results data. The visualization function is specified as a string
-#' (e.g., "gsm.timez::Visualize") and resolved at runtime.
+#' (e.g., "gsm.timez::Visualize_Heatmap") and resolved at runtime.
 #'
 #' @param dfResults A stacked data frame with a MetricID column, typically
 #'   Reporting_Results_allmonths from [gsm.reporting::BindResults()].
 #' @param strVisualizeFun Character string specifying the visualization function
-#'   to apply, including namespace (e.g., "gsm.timez::Visualize").
+#'   to apply, including namespace (e.g., "gsm.timez::Visualize_Heatmap").
 #' @param strOutputLabel Character string for the chart tab label in the report
 #'   (e.g., "Timeline", "Distribution").
 #' @param strIcon Optional Font Awesome icon name (e.g., "chart-line"). If
@@ -20,11 +20,12 @@
 #'   \code{Reporting_Bounds}). When provided, it is filtered to the current
 #'   MetricID and passed as the second positional argument to the visualization
 #'   function, before \code{...}. Use this for functions like
-#'   \code{\link{VisualizeFunnelPlot}} that require a separate bounds data frame.
+#'   \code{\link{Visualize_Funnel}} that require a separate bounds data frame.
 #' @param ... Additional arguments passed to the visualization function.
 #'
 #' @return A named list of plotly htmlwidget objects, keyed by MetricID.
 #'
+#' @importFrom fontawesome fa
 #' @export
 Widget <- function(dfResults, strVisualizeFun, strOutputLabel, strIcon = NULL,
                    bInteractive = TRUE, dfBounds = NULL, ...) {

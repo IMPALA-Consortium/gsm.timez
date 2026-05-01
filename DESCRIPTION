@@ -1,5 +1,5 @@
 Package: gsm.timez
-Title: What the Package Does (One Line, Title Case)
+Title: gsm.timez - Timeline Z-Score Funnel Analysis GSM Extension
 Version: 0.0.0.9000
 Authors@R: 
     person("Donato", "Rolo", , "donato.rolo@roche.com", role = c("aut", "cre"))
@@ -16,6 +16,7 @@ Remotes:
     gsm.kri=Gilead-BioStats/gsm.kri@main
 Imports:
     dplyr,
+    fontawesome,
     ggplot2,
     plotly,
     tidyr,

@@ -9,7 +9,7 @@
 #' @param strSiteID Character string specifying the site ID to highlight.
 #'   Must exist in `dfFlagged$GroupID`.
 #' @param dfBounds Optional. A data frame with pre-calculated funnel bounds from
-#'   \code{\link{TimeZScoreFunnel_PredictBounds}}. If provided, inner threshold
+#'   \code{\link{PredictBounds_TimeZFunnel}}. If provided, inner threshold
 #'   lines are drawn for the selected site based on its denominator at each month.
 #'   If NULL (default), no bounds are shown.
 #'
@@ -36,48 +36,10 @@
 #' }
 #'
 #' @seealso \code{\link{Flag}} for assigning flag categories,
-#'   \code{\link{Visualize}} for visualizing all flagged sites,
-#'   \code{\link{VisualizeFunnel}} for the heat map visualization.
-#'
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#'
-#' # Prepare data
-#' dfSubjects <- clindata::rawplus_dm
-#' dfNumerator <- clindata::rawplus_ae
-#' dfDenominator <- clindata::rawplus_visdt %>%
-#'   mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d"))
-#'
-#' # Run pipeline
-#' dfFlagged <- Timeline(
-#'   dfSubjects = dfSubjects,
-#'   dfNumerator = dfNumerator,
-#'   dfDenominator = dfDenominator,
-#'   strGroupCol = "invid",
-#'   strSubjectCol = "subjid",
-#'   strNumeratorDateCol = "aest_dt",
-#'   strDenominatorDateCol = "visit_dt"
-#' ) %>%
-#'   TimeZScoreFunnel() %>%
-#'   Flag()
-#'
-#' # Find a site with over-reporting flag in last month
-#' strSiteID <- dfFlagged %>%
-#'   group_by(GroupID) %>%
-#'   filter(NMonth == max(NMonth)) %>%
-#'   ungroup() %>%
-#'   filter(Flag > 0) %>%
-#'   pull(GroupID) %>%
-#'   head(1)
-#'
-#' # Visualize the site
-#' VisualizeSite(dfFlagged, strSiteID = strSiteID)
-#' }
+#'   \code{\link{Visualize_Heatmap}} for the heat map visualization.
 #'
 #' @export
-VisualizeSite <- function(dfFlagged, dfBounds = NULL, strSiteID) {
-
+Visualize_Site <- function(dfFlagged, dfBounds = NULL, strSiteID) {
   # Read flag attributes
   vFlag <- sort(attr(dfFlagged, "vFlag"))
   if (is.null(vFlag)) {
@@ -105,7 +67,7 @@ VisualizeSite <- function(dfFlagged, dfBounds = NULL, strSiteID) {
 
   dfFlaggedPoints <- dfSelectedSite %>%
     dplyr::filter(.data$Flag != 0)
-  
+
   if (!is.null(dfBounds)) {
     dfSiteDenom <- dfFlagged %>%
       dplyr::filter(.data$GroupID == strSiteID) %>%
@@ -158,8 +120,10 @@ VisualizeSite <- function(dfFlagged, dfBounds = NULL, strSiteID) {
   if (!is.null(dfBounds) && nrow(dfAllBoundLines) > 0) {
     p <- p + ggplot2::geom_line(
       data = dfAllBoundLines,
-      ggplot2::aes(x = .data$NMonth, y = .data$Metric,
-                   group = .data$Threshold, color = .data$Flag),
+      ggplot2::aes(
+        x = .data$NMonth, y = .data$Metric,
+        group = .data$Threshold, color = .data$Flag
+      ),
       linetype = "dashed",
       inherit.aes = FALSE
     )
@@ -185,7 +149,7 @@ VisualizeSite <- function(dfFlagged, dfBounds = NULL, strSiteID) {
 
   # Layer 5: Last point for selected site (shows current status if not flagged)
   dfLastPoint <- dfSelectedSite %>%
-    dplyr::filter(NMonth == max(NMonth)) %>%
+    dplyr::filter(.data$NMonth == max(.data$NMonth)) %>%
     dplyr::filter(Flag == 0)
 
   if (nrow(dfLastPoint) > 0) {

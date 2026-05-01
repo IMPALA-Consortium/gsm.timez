@@ -1,4 +1,4 @@
-# Tests for VisualizeSite function
+# Tests for Visualize_Site function
 
 create_funnel_flagged_data <- function() {
   dfSubjects <- data.frame(
@@ -29,43 +29,43 @@ create_funnel_flagged_data <- function() {
     strNumeratorDateCol = "EventDate",
     strDenominatorDateCol = "VisitDate"
   ) %>%
-    TimeZScoreFunnel()
+    Analyze_TimeZFunnel()
 
   list(
     dfFlagged = Flag(dfAnalyzed),
-    dfBounds  = TimeZScoreFunnel_PredictBounds(dfAnalyzed)
+    dfBounds  = PredictBounds_TimeZFunnel(dfAnalyzed)
   )
 }
 
 
-test_that("VisualizeSite returns a ggplot object without dfBounds", {
+test_that("Visualize_Site returns a ggplot object without dfBounds", {
   d <- create_funnel_flagged_data()
-  result <- VisualizeSite(d$dfFlagged, strSiteID = "A")
+  result <- Visualize_Site(d$dfFlagged, strSiteID = "A")
 
   expect_s3_class(result, "ggplot")
   expect_no_error(ggplot2::ggplot_build(result))
 })
 
 
-test_that("VisualizeSite returns a ggplot object with funnel dfBounds", {
+test_that("Visualize_Site returns a ggplot object with funnel dfBounds", {
   d <- create_funnel_flagged_data()
-  result <- VisualizeSite(d$dfFlagged, dfBounds = d$dfBounds, strSiteID = "A")
+  result <- Visualize_Site(d$dfFlagged, dfBounds = d$dfBounds, strSiteID = "A")
 
   expect_s3_class(result, "ggplot")
   expect_no_error(ggplot2::ggplot_build(result))
 })
 
 
-test_that("VisualizeSite adds exactly one extra layer when dfBounds is provided", {
+test_that("Visualize_Site adds exactly one extra layer when dfBounds is provided", {
   d <- create_funnel_flagged_data()
-  result_without <- VisualizeSite(d$dfFlagged, strSiteID = "A")
-  result_with    <- VisualizeSite(d$dfFlagged, dfBounds = d$dfBounds, strSiteID = "A")
+  result_without <- Visualize_Site(d$dfFlagged, strSiteID = "A")
+  result_with <- Visualize_Site(d$dfFlagged, dfBounds = d$dfBounds, strSiteID = "A")
 
   expect_equal(length(result_with$layers), length(result_without$layers) + 1)
 })
 
 
-test_that("VisualizeSite errors on invalid strSiteID", {
+test_that("Visualize_Site errors on invalid strSiteID", {
   d <- create_funnel_flagged_data()
-  expect_error(VisualizeSite(d$dfFlagged, strSiteID = "INVALID"), "not found")
+  expect_error(Visualize_Site(d$dfFlagged, strSiteID = "INVALID"), "not found")
 })

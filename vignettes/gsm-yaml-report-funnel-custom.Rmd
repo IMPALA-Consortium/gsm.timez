@@ -18,7 +18,7 @@ This vignette demonstrates how to use the GSM YAML workflow system to generate
 an HTML report for the timeline KRI using the **funnel-based z-score method**
 with a **custom report template** stored in `gsm.timez`.
 
-The custom template (`inst/report/Report_KRI_Custom.Rmd`) is a starting point
+The custom template (`inst/report/Report_TimeZFunnel.Rmd`) is a starting point
 for customizing the report layout and styling independently of `gsm.kri`.
 
 For the standard funnel method report, see the
@@ -61,7 +61,7 @@ lMapped <- gsm.core::RunWorkflows(mapping_wf, lRaw)
 # Run gsm.timez 2_metrics workflows (funnel method only)
 metrics_wf <- gsm.core::MakeWorkflowList(
   strPath = system.file("workflow/2_metrics", package = "gsm.timez"),
-  strNames = "kri_timez_funnel",
+  strNames = "kri_TimeZFunnel",
   bExact = TRUE
 )
 lAnalyzed <- gsm.core::RunWorkflows(metrics_wf, lMapped)
@@ -80,12 +80,12 @@ lReporting <- gsm.core::RunWorkflows(
 
 The final step runs the `4_modules` workflows to generate an HTML report. This step
 uses `gsm.kri::Report_KRI` with `gsm.timez`'s custom template
-(`inst/report/Report_KRI_Custom.Rmd`).
+(`inst/report/Report_TimeZFunnel.Rmd`).
 
 ```{r run-modules, message=FALSE, results='hide'}
 module_wf <- gsm.core::MakeWorkflowList(
   strPath = system.file("workflow/4_modules", package = "gsm.timez"),
-  strNames = "TimelineFunnelCustom",
+  strNames = "Report_TimeZFunnel",
   bExact = TRUE
 )
 lReport <- gsm.core::RunWorkflows(
@@ -98,8 +98,8 @@ lReport <- gsm.core::RunWorkflows(
 # Move report to docs/articles/ during pkgdown builds
 dest_dir <- file.path("..", "docs", "articles")
 if (dir.exists(dest_dir)) {
-  file.rename(lReport$Module_TimelineFunnelCustom, file.path(dest_dir, "kri_report_funnel_custom.html"))
+  file.rename(lReport$Module_Report_TimeZFunnel, file.path(dest_dir, "Report_TimeZFunnel.html"))
 }
 ```
 
-The workflow generates `kri_report_funnel_custom.html`. See the [Sample Report (Funnel CUSTOM)](kri_report_funnel_custom.html) for an example output.
+The workflow generates `Report_TimeZFunnel.html`. See the [Sample Report](Report_TimeZFunnel.html) for an example output.

@@ -1,6 +1,6 @@
-# Tests for TimeZScoreFunnel function
+# Tests for Analyze_TimeZFunnel function
 
-test_that("TimeZScoreFunnel requires gsm.core package", {
+test_that("Analyze_TimeZFunnel requires gsm.core package", {
   skip_if_not_installed("gsm.core")
 
   dfTimeline <- data.frame(
@@ -12,11 +12,11 @@ test_that("TimeZScoreFunnel requires gsm.core package", {
     NMonth = 1
   )
 
-  expect_no_error(TimeZScoreFunnel(dfTimeline))
+  expect_no_error(Analyze_TimeZFunnel(dfTimeline))
 })
 
 
-test_that("TimeZScoreFunnel returns correct column names", {
+test_that("Analyze_TimeZFunnel returns correct column names", {
   skip_if_not_installed("gsm.core")
 
   dfTimeline <- data.frame(
@@ -28,7 +28,7 @@ test_that("TimeZScoreFunnel returns correct column names", {
     NMonth = 1
   )
 
-  result <- TimeZScoreFunnel(dfTimeline)
+  result <- Analyze_TimeZFunnel(dfTimeline)
 
   # Should have columns from Analyze_NormalApprox
   expect_true("GroupID" %in% names(result))
@@ -39,7 +39,7 @@ test_that("TimeZScoreFunnel returns correct column names", {
 })
 
 
-test_that("TimeZScoreFunnel calculates Metric correctly", {
+test_that("Analyze_TimeZFunnel calculates Metric correctly", {
   skip_if_not_installed("gsm.core")
 
   dfTimeline <- data.frame(
@@ -51,7 +51,7 @@ test_that("TimeZScoreFunnel calculates Metric correctly", {
     NMonth = 1
   )
 
-  result <- TimeZScoreFunnel(dfTimeline)
+  result <- Analyze_TimeZFunnel(dfTimeline)
 
   # Metric should be Numerator / Denominator
   expected_metric <- dfTimeline$Numerator / dfTimeline$Denominator
@@ -59,7 +59,7 @@ test_that("TimeZScoreFunnel calculates Metric correctly", {
 })
 
 
-test_that("TimeZScoreFunnel works with multiple months", {
+test_that("Analyze_TimeZFunnel works with multiple months", {
   skip_if_not_installed("gsm.core")
 
   dfTimeline <- data.frame(
@@ -71,7 +71,7 @@ test_that("TimeZScoreFunnel works with multiple months", {
     NMonth = c(1, 1, 2, 2)
   )
 
-  result <- TimeZScoreFunnel(dfTimeline)
+  result <- Analyze_TimeZFunnel(dfTimeline)
 
   # Should have same number of rows
   expect_equal(nrow(result), nrow(dfTimeline))
@@ -85,7 +85,7 @@ test_that("TimeZScoreFunnel works with multiple months", {
 })
 
 
-test_that("TimeZScoreFunnel errors on invalid input", {
+test_that("Analyze_TimeZFunnel errors on invalid input", {
   skip_if_not_installed("gsm.core")
 
   # Missing required columns
@@ -94,11 +94,11 @@ test_that("TimeZScoreFunnel errors on invalid input", {
     GroupID = c("A", "A", "B")
   )
 
-  expect_error(TimeZScoreFunnel(invalid_df))
+  expect_error(Analyze_TimeZFunnel(invalid_df))
 })
 
 
-test_that("TimeZScoreFunnel works with clindata", {
+test_that("Analyze_TimeZFunnel works with clindata", {
   skip_if_not_installed("gsm.core")
   skip_if_not_installed("clindata")
 
@@ -113,7 +113,7 @@ test_that("TimeZScoreFunnel works with clindata", {
       strDenominatorDateCol = "visit_dt"
     )
 
-  result <- TimeZScoreFunnel(dfTimeline)
+  result <- Analyze_TimeZFunnel(dfTimeline)
 
   # Result should have same number of rows as input
   expect_equal(nrow(result), nrow(dfTimeline))
@@ -126,7 +126,7 @@ test_that("TimeZScoreFunnel works with clindata", {
 })
 
 
-test_that("TimeZScoreFunnel preserves extra columns from input", {
+test_that("Analyze_TimeZFunnel preserves extra columns from input", {
   skip_if_not_installed("gsm.core")
 
   dfTimeline <- data.frame(
@@ -138,7 +138,7 @@ test_that("TimeZScoreFunnel preserves extra columns from input", {
     NMonth = 1
   )
 
-  result <- TimeZScoreFunnel(dfTimeline)
+  result <- Analyze_TimeZFunnel(dfTimeline)
 
   expect_true("DenominatorMonth" %in% names(result))
   expect_equal(result$DenominatorMonth, dfTimeline$DenominatorMonth)

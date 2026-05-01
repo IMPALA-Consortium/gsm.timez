@@ -4,12 +4,12 @@
 #' Wrapper around `gsm.core::Flag()`. Adds a Flag column to analyzed data
 #' identifying possible statistical outliers based on threshold comparisons.
 #' Also stores `vThreshold` and `vFlag` as attributes for downstream use
-#' by `Visualize()` (for bounds and legend).
+#' by downstream visualization functions.
 #'
 #' Months where the number of distinct sites falls below `nMinSiteFraction`
 #' of the peak site count are considered statistically unreliable and have
 #' their `Flag` set to `NA`, consistent with the `NA` bounds returned by
-#' [TimeZScore_PredictBounds()] for the same months.
+#' [PredictBounds_TimeZFunnel()] for the same months.
 #'
 #' @param dfAnalyzed `data.frame` where flags should be added. Must contain
 #'   columns `NMonth` and `GroupID` for sparse-month detection.
@@ -20,14 +20,14 @@
 #' @param nMinSiteFraction Minimum fraction of peak site count required to
 #'   return a non-`NA` flag for a month. Months where the number of distinct
 #'   `GroupID`s is below this fraction of the maximum are returned with
-#'   `Flag = NA`. Default is `0.2` (20\%), matching [TimeZScore_PredictBounds()].
+#'   `Flag = NA`. Default is `0.2` (20\%), matching [PredictBounds_TimeZFunnel()].
 #'   Set to `0` to disable sparse-month masking.
 #' @param ... Additional arguments passed to `gsm.core::Flag()`.
 #'
 #' @return `data.frame` with an additional `Flag` column and attributes
 #'   `vThreshold` and `vFlag` for downstream use.
 #'
-#' @seealso [gsm.core::Flag()], [TimeZScore_PredictBounds()]
+#' @seealso [gsm.core::Flag()], [PredictBounds_TimeZFunnel()]
 #'
 #' @export
 Flag <- function(dfAnalyzed,

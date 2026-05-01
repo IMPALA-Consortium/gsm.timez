@@ -1,7 +1,7 @@
 meta:
   Type: Reporting
   ID: Bounds
-  Description: Stack funnel bounds across all metrics for use in VisualizeFunnelPlot
+  Description: Stack funnel bounds across all metrics for use in Visualize_Funnel
 
 spec:
   Mapped_STUDY:

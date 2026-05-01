@@ -101,41 +101,37 @@ GSM standard PascalCase conventions:
 - `NMonth`: Sequential month index for the site (1, 2, 3, ...). This is the 
   site's "study month" - the first month with data is 1, the second is 2, etc.
 
-## TimeZScore Function
+## Analyze_TimeZFunnel Function
 
-The `TimeZScore()` function takes the output from `Timeline()` and calculates 
-cumulative z-scores for each row using an expanding window indexed by month.
+The `Analyze_TimeZFunnel()` function takes the output from `Timeline()` and calculates
+funnel plot scores using the Poisson-based normal approximation (Zink et al.).
+The score adjusts for sample size, so larger sites are held to tighter standards.
 
-The z-score formula is:
+The score formula is:
 
-$$z = \frac{Metric - mean(Metrics)}{sd(Metrics)}$$
+$$Score = \frac{Metric - OverallMetric}{\sqrt{OverallMetric \times Factor / Denominator}}$$
 
-Where `Metrics` includes all Metric values from all groups where `NMonth <= current_NMonth`.
-This means:
-
-- For month 1: z-scores are calculated using all Metrics from month 1
-- For month 2: z-scores are calculated using all Metrics from months 1 and 2
-- And so on...
-
-If fewer than 2 Metrics exist in the cumulative window, the Score is 0.
+Where `OverallMetric` is the study-wide pooled rate at each month cross-section.
 
 ### Basic Usage
 
-The function is designed to work seamlessly with `Timeline()` output using the 
+The function is designed to work seamlessly with `Timeline()` output using the
 pipe operator:
 
 ```{r zscore-basic}
-dfTimeZScore <- gsm.timez::TimeZScore(dfTimeline)
+dfTimeZScore <- gsm.timez::Analyze_TimeZFunnel(dfTimeline)
 
 knitr::kable(head(dfTimeZScore))
 ```
 
 ### Output Columns
 
-The TimeZScore output returns the input data frame with two additional columns:
+The `Analyze_TimeZFunnel()` output returns the input data frame with additional columns:
 
 - `Metric`: The ratio of Numerator to Denominator (Numerator/Denominator)
-- `Score`: The z-score calculated using the cumulative expanding window
+- `OverallMetric`: The study-wide pooled rate at each month
+- `Factor`: The factor used in the normal approximation for calculating bounds
+- `Score`: The adjusted z-score that accounts for sample size
 
 ## Flag Function
 
@@ -148,24 +144,23 @@ dfFlagged <- gsm.timez::Flag(dfTimeZScore)
 knitr::kable(head(dfFlagged))
 ```
 
-## Visualize Function
+## Visualize_Heatmap Function
 
-The `Visualize()` function creates a line plot showing each site's metric over time, 
-with dots colored by flag value:
+The `Visualize_Heatmap()` function creates a heatmap showing each site's flag status
+over time:
 
 ```{r visualize, fig.width=8, fig.height=5}
-gsm.timez::Visualize(dfFlagged)
+gsm.timez::Visualize_Heatmap(dfFlagged)
 ```
 
-## VisualizeBoxplot Function
+## Visualize_Funnel Function
 
-The `VisualizeBoxplot()` function creates a boxplot showing the distribution of 
-Metric values for each month, with individual points colored by flag value. 
-Points are rendered behind the boxplots with reduced opacity (alpha=0.4):
+The `Visualize_Funnel()` function creates a funnel plot for a selected month,
+showing site Metric values against their Denominator with Poisson-based control bounds:
 
 ```{r visualize-boxplot, fig.width=8, fig.height=5}
-# Show only first 10 months for clarity
-gsm.timez::VisualizeBoxplot(dfFlagged, nMonths = 1:10)
+dfBounds <- gsm.timez::PredictBounds_TimeZFunnel(dfTimeZScore)
+gsm.timez::Visualize_Funnel(dfFlagged, dfBounds = dfBounds)
 ```
 
 ## Advanced Usage
@@ -240,10 +235,9 @@ vignette: `vignette("HTMLReporting", package = "gsm.timez")`.
 
 Key functions include:
 
-- `Widget_Timeline()` - Interactive line chart
-- `Widget_TimelineBoxplot()` - Interactive boxplot
-- `MakeCharts_Timeline()` - Generate chart lists
-- `Report_Timeline()` - Generate complete HTML reports
+- `Widget()` - Create interactive plotly charts for any visualization function
+- `Merge_ChartLists()` - Combine chart lists from multiple Widget calls
+- `Report_TimeZFunnel()` - Generate a complete HTML report
 
 ## Complete Workflow
 
@@ -259,9 +253,9 @@ gsm.timez::Timeline(
   strNumeratorDateCol   = "aest_dt",
   strDenominatorDateCol = "visit_dt"
 ) %>%
-  gsm.timez::TimeZScore() %>%
+  gsm.timez::Analyze_TimeZFunnel() %>%
   gsm.timez::Flag() %>%
-  gsm.timez::Visualize()
+  gsm.timez::Visualize_Heatmap()
 ```
 
 For generating HTML reports, see `vignette("HTMLReporting", package = "gsm.timez")`.

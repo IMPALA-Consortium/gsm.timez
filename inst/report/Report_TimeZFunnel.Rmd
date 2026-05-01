@@ -2,6 +2,7 @@
 output:
   html_document:
     mathjax: null
+    md_extensions: "-tex_math_dollars"
     toc: true
     toc_float:
       collapsed: false

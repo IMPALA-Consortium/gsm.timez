@@ -9,7 +9,7 @@
 #' @return A merged list with all charts combined per metric.
 #'
 #' @export
-MergeChartLists <- function(...) {
+Merge_ChartLists <- function(...) {
   lInputs <- list(...)
   allMetrics <- unique(unlist(lapply(lInputs, names)))
 

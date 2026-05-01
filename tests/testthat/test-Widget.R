@@ -30,7 +30,7 @@ create_test_results <- function(strMetricID = "Test_Metric") {
     strNumeratorDateCol = "EventDate",
     strDenominatorDateCol = "VisitDate"
   ) %>%
-    TimeZScore() %>%
+    Analyze_TimeZFunnel() %>%
     Flag() %>%
     dplyr::mutate(MetricID = strMetricID)
 
@@ -38,29 +38,16 @@ create_test_results <- function(strMetricID = "Test_Metric") {
 }
 
 
-test_that("Widget works with Visualize", {
+test_that("Widget works with Visualize_Heatmap", {
   dfResults <- create_test_results()
 
-  result <- Widget(dfResults, "gsm.timez::Visualize", "Visualize")
+  result <- Widget(dfResults, "gsm.timez::Visualize_Heatmap", "Visualize_Heatmap")
 
   expect_type(result, "list")
   expect_equal(names(result), "Test_Metric")
-  expect_equal(names(result$Test_Metric), "Visualize")
-  expect_s3_class(result$Test_Metric$Visualize, "plotly")
-  expect_equal(attr(result$Test_Metric$Visualize, "output_label"), "Visualize")
-})
-
-
-test_that("Widget works with VisualizeBoxplot", {
-  dfResults <- create_test_results()
-
-  result <- Widget(dfResults, "gsm.timez::VisualizeBoxplot", "VisualizeBoxplot")
-
-  expect_type(result, "list")
-  expect_equal(names(result), "Test_Metric")
-  expect_equal(names(result$Test_Metric), "VisualizeBoxplot")
-  expect_s3_class(result$Test_Metric$VisualizeBoxplot, "plotly")
-  expect_equal(attr(result$Test_Metric$VisualizeBoxplot, "output_label"), "VisualizeBoxplot")
+  expect_equal(names(result$Test_Metric), "Visualize_Heatmap")
+  expect_s3_class(result$Test_Metric$Visualize_Heatmap, "plotly")
+  expect_equal(attr(result$Test_Metric$Visualize_Heatmap, "output_label"), "Visualize_Heatmap")
 })
 
 
@@ -93,25 +80,25 @@ create_test_funnel_data <- function(strMetricID = "Test_Metric") {
     strNumeratorDateCol = "EventDate",
     strDenominatorDateCol = "VisitDate"
   ) %>%
-    TimeZScoreFunnel()
+    Analyze_TimeZFunnel()
 
   dfFlagged <- dfAnalyzed %>%
     Flag(vThreshold = c(-1.5, -1, 2, 3)) %>%
     dplyr::mutate(MetricID = strMetricID)
 
-  dfBounds <- TimeZScoreFunnel_PredictBounds(dfAnalyzed, vThreshold = c(-1.5, -1, 2, 3)) %>%
+  dfBounds <- PredictBounds_TimeZFunnel(dfAnalyzed, vThreshold = c(-1.5, -1, 2, 3)) %>%
     dplyr::mutate(MetricID = strMetricID)
 
   list(dfFlagged = dfFlagged, dfBounds = dfBounds)
 }
 
 
-test_that("Widget passes dfBounds filtered by MetricID to VisualizeFunnelPlot", {
+test_that("Widget passes dfBounds filtered by MetricID to Visualize_Funnel", {
   lData <- create_test_funnel_data("Test_Metric")
 
   result <- Widget(
     lData$dfFlagged,
-    "gsm.timez::VisualizeFunnelPlot",
+    "gsm.timez::Visualize_Funnel",
     "Funnel Plot",
     dfBounds = lData$dfBounds
   )
@@ -129,8 +116,9 @@ test_that("Widget with dfBounds handles multiple metrics independently", {
   dfResults <- dplyr::bind_rows(lData1$dfFlagged, lData2$dfFlagged)
   dfBounds <- dplyr::bind_rows(lData1$dfBounds, lData2$dfBounds)
 
-  result <- Widget(dfResults, "gsm.timez::VisualizeFunnelPlot", "Funnel Plot",
-                   dfBounds = dfBounds)
+  result <- Widget(dfResults, "gsm.timez::Visualize_Funnel", "Funnel Plot",
+    dfBounds = dfBounds
+  )
 
   expect_equal(names(result), c("Metric_A", "Metric_B"))
   expect_s3_class(result$Metric_A$`Funnel Plot`, "plotly")
@@ -143,9 +131,9 @@ test_that("Widget handles multiple metrics", {
   dfResults2 <- create_test_results("Metric_B")
   dfResults <- dplyr::bind_rows(dfResults1, dfResults2)
 
-  result <- Widget(dfResults, "gsm.timez::Visualize", "Visualize")
+  result <- Widget(dfResults, "gsm.timez::Visualize_Heatmap", "Visualize_Heatmap")
 
   expect_equal(names(result), c("Metric_A", "Metric_B"))
-  expect_equal(names(result$Metric_A), "Visualize")
-  expect_equal(names(result$Metric_B), "Visualize")
+  expect_equal(names(result$Metric_A), "Visualize_Heatmap")
+  expect_equal(names(result$Metric_B), "Visualize_Heatmap")
 })

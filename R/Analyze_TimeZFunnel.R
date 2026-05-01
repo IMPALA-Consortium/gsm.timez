@@ -34,47 +34,9 @@
 #' variance equals the mean. The key advantage over simple z-scores is that
 #' larger sites (higher Denominator) are expected to have less variability,
 #' so they receive narrower confidence bounds.
-#'
-#' @seealso \code{\link{TimeZScore}} for the empirical z-score approach,
-#'   \code{\link{VisualizeFunnel}} for plotting funnel scores.
-#'
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#' dfSubjects <- data.frame(
-#'   SubjectID = c(1, 2, 3, 4),
-#'   SiteID = c("A", "A", "B", "B")
-#' )
-#' dfNumerator <- data.frame(
-#'   SubjectID = c(1, 1, 2, 3, 4, 4, 4),
-#'   EventDate = as.Date(c(
-#'     "2022-01-01", "2022-01-15", "2022-02-01",
-#'     "2022-01-10", "2022-01-05", "2022-01-20", "2022-02-01"
-#'   ))
-#' )
-#' dfDenominator <- data.frame(
-#'   SubjectID = c(1, 1, 2, 2, 3, 3, 4, 4),
-#'   VisitDate = as.Date(c(
-#'     "2022-01-01", "2022-01-20", "2022-01-01", "2022-02-01",
-#'     "2022-01-01", "2022-01-15", "2022-01-01", "2022-02-01"
-#'   ))
-#' )
-#'
-#' dfTimeline <- Timeline(
-#'   dfSubjects = dfSubjects,
-#'   dfNumerator = dfNumerator,
-#'   dfDenominator = dfDenominator,
-#'   strGroupCol = "SiteID",
-#'   strSubjectCol = "SubjectID",
-#'   strNumeratorDateCol = "EventDate",
-#'   strDenominatorDateCol = "VisitDate"
-#' )
-#'
-#' TimeZScoreFunnel(dfTimeline)
-#' }
-#'
+#' 
 #' @export
-TimeZScoreFunnel <- function(dfTimeline) {
+Analyze_TimeZFunnel <- function(dfTimeline) {
   # Validate input columns
   required_cols <- c("GroupID", "GroupLevel", "Numerator", "Denominator", "NMonth")
   stopifnot(all(required_cols %in% names(dfTimeline)))

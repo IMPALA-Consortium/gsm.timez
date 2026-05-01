@@ -4,7 +4,7 @@
 #' matching the visualization style from Zink et al. (Figures 7 & 8).
 #'
 #' @param dfFlagged A data frame output from Flag() applied to
-#'   \code{\link{TimeZScoreFunnel}} output. Must contain columns:
+#'   \code{\link{Analyze_TimeZFunnel}} output. Must contain columns:
 #'   GroupID, NMonth, and Flag. Must also have `vFlag` attribute
 #'   (set by \code{gsm.timez::Flag()}).
 #'
@@ -31,50 +31,11 @@
 #' under-reporting (Flag = -2, -1), gray for values within limits (Flag = 0),
 #' and red shades for over-reporting (Flag = 1, 2).
 #'
-#' @seealso \code{\link{TimeZScoreFunnel}} for calculating funnel scores,
-#'   \code{\link{Flag}} for assigning flag categories,
-#'   \code{\link{Visualize}} for the empirical z-score visualization.
-#'
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#' dfSubjects <- data.frame(
-#'   SubjectID = c(1, 2, 3, 4),
-#'   SiteID = c("A", "A", "B", "B")
-#' )
-#' dfNumerator <- data.frame(
-#'   SubjectID = c(1, 1, 2, 3, 4, 4, 4),
-#'   EventDate = as.Date(c(
-#'     "2022-01-01", "2022-01-15", "2022-02-01",
-#'     "2022-01-10", "2022-01-05", "2022-01-20", "2022-02-01"
-#'   ))
-#' )
-#' dfDenominator <- data.frame(
-#'   SubjectID = c(1, 1, 2, 2, 3, 3, 4, 4),
-#'   VisitDate = as.Date(c(
-#'     "2022-01-01", "2022-01-20", "2022-01-01", "2022-02-01",
-#'     "2022-01-01", "2022-01-15", "2022-01-01", "2022-02-01"
-#'   ))
-#' )
-#'
-#' dfFlagged <- Timeline(
-#'   dfSubjects = dfSubjects,
-#'   dfNumerator = dfNumerator,
-#'   dfDenominator = dfDenominator,
-#'   strGroupCol = "SiteID",
-#'   strSubjectCol = "SubjectID",
-#'   strNumeratorDateCol = "EventDate",
-#'   strDenominatorDateCol = "VisitDate"
-#' ) %>%
-#'   TimeZScoreFunnel() %>%
-#'   Flag()
-#'
-#' VisualizeFunnel(dfFlagged)
-#' }
-#'
+#' @seealso \code{\link{Analyze_TimeZFunnel}} for calculating funnel scores,
+#'   \code{\link{Flag}} for assigning flag categories.
+#' 
 #' @export
-VisualizeFunnel <- function(dfFlagged) {
-
+Visualize_Heatmap <- function(dfFlagged) {
   # Read flag attribute
 
   vFlag <- attr(dfFlagged, "vFlag")
@@ -104,10 +65,10 @@ VisualizeFunnel <- function(dfFlagged) {
     dplyr::arrange(dplyr::desc(.data$last_flagged), dplyr::desc(.data$n_flagged), .data$GroupID)
   vGroups <- dfSortKeys$GroupID
 
-# ============================================================================
-# TEMPORARY: Limit to 30 sites for faster plotly generation during testing.
-# ============================================================================
-  vGroups <- head(vGroups, 30)
+  # ============================================================================
+  # TEMPORARY: Limit to 30 sites for faster plotly generation during testing.
+  # ============================================================================
+  vGroups <- utils::head(vGroups, 30)
   dfPlot <- dfPlot %>% dplyr::filter(.data$GroupID %in% vGroups)
 
   # Build heat map

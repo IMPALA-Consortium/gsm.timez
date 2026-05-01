@@ -80,13 +80,13 @@ cat("Timeline output:", nrow(dfTimeline_scripted), "rows\n")
 knitr::kable(head(dfTimeline_scripted, 10))
 ```
 
-### Step 2: Calculate Z-Scores
+### Step 2: Calculate Funnel Scores
 
 ```{r scripted-zscore}
-dfAnalyzed_scripted <- TimeZScore(dfTimeline_scripted)
+dfAnalyzed_scripted <- Analyze_TimeZFunnel(dfTimeline_scripted)
 
 cat("Analyzed output:", nrow(dfAnalyzed_scripted), "rows\n")
-cat("New columns added: Metric, Score\n")
+cat("New columns added: Metric, OverallMetric, Factor, Score\n")
 knitr::kable(head(dfAnalyzed_scripted, 10))
 ```
 
@@ -113,7 +113,7 @@ dfFlagged_chained <- Timeline(
   strNumeratorDateCol = "aest_dt",
   strDenominatorDateCol = "visit_dt"
 ) %>%
-  TimeZScore() %>%
+  Analyze_TimeZFunnel() %>%
   gsm.timez::Flag(vThreshold = c(-2, -1, 1, 2))
 
 cat("Chained pipeline output:", nrow(dfFlagged_chained), "rows\n")
@@ -150,11 +150,11 @@ The workflow returns a list containing all intermediate and final results:
 
 ```{r yaml-output}
 cat("Workflow output components:\n")
-names(lAnalysis$Analysis_kri_timez)
+names(lAnalysis$Analysis_kri_TimeZFunnel)
 ```
 
 ```{r yaml-results}
-dfFlagged_yaml <- lAnalysis$Analysis_kri_timez$Flagged
+dfFlagged_yaml <- lAnalysis$Analysis_kri_TimeZFunnel$Flagged
 
 cat("Flagged output from YAML workflow:", nrow(dfFlagged_yaml), "rows\n")
 knitr::kable(head(dfFlagged_yaml, 10))
@@ -173,7 +173,8 @@ scripted_result <- dfFlagged_scripted %>%
 
 yaml_result <- dfFlagged_yaml %>%
   select(GroupID, GroupLevel, NMonth, Numerator, Denominator, Metric, Score, Flag) %>%
-  arrange(GroupID, NMonth)
+  arrange(GroupID, NMonth) %>%
+  as.data.frame()
 
 cat("Results are equivalent:", all.equal(scripted_result, yaml_result), "\n")
 ```
@@ -182,10 +183,10 @@ cat("Results are equivalent:", all.equal(scripted_result, yaml_result), "\n")
 
 ## Visualization
 
-Both outputs can be visualized using the `Visualize()` function:
+Both outputs can be visualized using the `Visualize_Heatmap()` function:
 
 ```{r visualize, fig.width = 8, fig.height = 5}
-Visualize(dfFlagged_scripted)
+Visualize_Heatmap(dfFlagged_scripted)
 ```
 
 ***

@@ -8,9 +8,8 @@ GetSparseMonths(df, nMinSiteFraction)
 }
 \arguments{
 \item{df}{A data frame containing at minimum columns \code{NMonth} (month index)
-and \code{GroupID} (site identifier). Typically the output of \code{\link[=TimeZScore]{TimeZScore()}} or
-the \code{dfAnalyzed} argument passed to \code{\link[=TimeZScore_PredictBounds]{TimeZScore_PredictBounds()}} /
-\code{\link[=TimeZScoreFunnel_PredictBounds]{TimeZScoreFunnel_PredictBounds()}}.}
+and \code{GroupID} (site identifier). Typically the output of \code{\link[=Analyze_TimeZFunnel]{Analyze_TimeZFunnel()}}
+or the \code{dfAnalyzed} argument passed to \code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}}.}
 
 \item{nMinSiteFraction}{Minimum fraction of peak site count; months below
 this fraction are marked sparse.}
