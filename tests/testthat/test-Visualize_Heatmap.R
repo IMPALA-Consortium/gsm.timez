@@ -137,3 +137,49 @@ test_that("Visualize_Heatmap works with clindata", {
   expect_s3_class(result, "ggplot")
   expect_no_error(ggplot2::ggplot_build(result))
 })
+
+
+test_that("Visualize_Heatmap with nSites limits sites and adds correct title", {
+  skip_if_not_installed("gsm.core")
+  skip_if_not_installed("clindata")
+
+  dfFlagged <- Timeline(
+    dfSubjects = clindata::rawplus_dm,
+    dfNumerator = clindata::rawplus_ae,
+    dfDenominator = clindata::rawplus_visdt %>% dplyr::mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d")),
+    strGroupCol = "invid",
+    strSubjectCol = "subjid",
+    strNumeratorDateCol = "aest_dt",
+    strDenominatorDateCol = "visit_dt"
+  ) %>%
+    Analyze_TimeZFunnel() %>%
+    Flag()
+
+  nTotal <- length(unique(dfFlagged$GroupID))
+  result <- Visualize_Heatmap(dfFlagged, nSites = 2)
+
+  expect_lte(length(unique(result$data$GroupID)), 2)
+  expect_match(result$labels$title, sprintf("Showing top 2 of %d sites", nTotal))
+})
+
+
+test_that("Visualize_Heatmap with nSites = NULL shows all sites and no title", {
+  skip_if_not_installed("gsm.core")
+
+  dfFlagged <- create_flagged_funnel_data()
+  result <- Visualize_Heatmap(dfFlagged)
+
+  expect_equal(length(unique(result$data$GroupID)), length(unique(dfFlagged$GroupID)))
+  expect_null(result$labels$title)
+})
+
+
+test_that("Visualize_Heatmap with nSites > total sites shows all sites with correct title", {
+  skip_if_not_installed("gsm.core")
+
+  dfFlagged <- create_flagged_funnel_data() # only 2 sites: A, B
+  result <- Visualize_Heatmap(dfFlagged, nSites = 99)
+
+  expect_equal(length(unique(result$data$GroupID)), 2)
+  expect_match(result$labels$title, "Showing top 2 of 2 sites")
+})

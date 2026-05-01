@@ -4,46 +4,44 @@
 #' confidence bounds for a single month. Sites are plotted as points colored
 #' by their Flag value, with flagged sites labeled.
 #'
-#' @param dfFlagged A data frame output from \code{\link{Flag}} applied to
-#'   \code{\link{Analyze_TimeZFunnel}} output. Must contain columns:
+#' @param dfFlagged A data frame output from [Flag()] applied to
+#'   [Analyze_TimeZFunnel()] output. Must contain columns:
 #'   \code{GroupID}, \code{NMonth}, \code{Denominator}, \code{Metric}, \code{Flag}.
 #'   Must have \code{vFlag} attribute (set by \code{gsm.timez::Flag()}).
-#' @param dfBounds A data frame output from \code{\link{PredictBounds_TimeZFunnel}}.
+#' @param dfBounds A data frame output from [PredictBounds_TimeZFunnel()].
 #'   Must contain columns: \code{NMonth}, \code{Threshold}, \code{Denominator},
 #'   \code{Metric}.
 #' @param NMonth Optional integer specifying which month to plot. If \code{NULL}
-#'   (default), uses the largest month where at least 75\% of sites are active,
-#'   ensuring good site coverage in the plot.
+#'   (default), uses the largest month with at least the minimum fraction of
+#'   sites active (as specified in [Flag()] and
+#'   [PredictBounds_TimeZFunnel()] via \code{nMinSiteFraction}). If
+#'   provided, must meet the same criterion; an error is raised otherwise.
 #'
-#' @return A ggplot2 object showing:
-#'   \itemize{
-#'     \item Funnel bound curves (dashed lines for thresholds, solid for mean)
-#'     \item Site points colored by Flag value
-#'     \item Labels for flagged sites (Flag != 0)
-#'   }
+#' @return A [ggplot2::ggplot()] object.
 #'
-#' @details
-#' This visualization shows a single month's cross-section as a traditional
-#' funnel plot. The x-axis shows Denominator (log scale), and the y-axis shows
-#' Metric. Funnel curves narrow as Denominator increases, reflecting the
-#' expectation that larger sites have less variability.
+#' @seealso [Analyze_TimeZFunnel()] for calculating funnel scores,
+#'   [PredictBounds_TimeZFunnel()] for calculating bounds,
+#'   [Visualize_Heatmap()] for the heat map visualization across all months.
 #'
-#' @seealso \code{\link{Analyze_TimeZFunnel}} for calculating funnel scores,
-#'   \code{\link{PredictBounds_TimeZFunnel}} for calculating bounds,
-#'   \code{\link{Visualize_Heatmap}} for the heat map visualization across all months.
-#' 
 #' @export
 Visualize_Funnel <- function(dfFlagged, dfBounds, NMonth = NULL) {
   # Read flag attribute
 
-  vFlag <- attr(dfFlagged, "vFlag")
+  vFlag <- sort(attr(dfFlagged, "vFlag"))
   if (is.null(vFlag)) {
     stop("dfFlagged must have 'vFlag' attribute (set by gsm.timez::Flag())")
   }
+  vThreshold <- attr(dfFlagged, "vThreshold")
 
-  # Default to largest month with >= 75% site coverage
+  valid_months <- dfFlagged %>%
+    dplyr::filter(!is.na(.data$Flag)) %>%
+    dplyr::pull(.data$NMonth) %>%
+    unique()
+
   if (is.null(NMonth)) {
-    NMonth <- find_default_month(dfFlagged)
+    NMonth <- max(valid_months)
+  } else if (!NMonth %in% valid_months) {
+    stop(paste0("NMonth ", NMonth, " is sparse or not present in the data."))
   }
 
   # Filter to selected month
@@ -51,16 +49,27 @@ Visualize_Funnel <- function(dfFlagged, dfBounds, NMonth = NULL) {
     dplyr::filter(.data$NMonth == !!NMonth) %>%
     dplyr::mutate(Flag = factor(.data$Flag, levels = vFlag))
 
+  sorted_thresh <- sort(vThreshold)
+  sorted_nonzero_flags <- sort(vFlag[vFlag != 0])
+  threshold_flag_map <- stats::setNames(sorted_nonzero_flags, as.character(sorted_thresh))
+
   dfPlotBounds <- dfBounds %>%
-    dplyr::filter(.data$NMonth == !!NMonth)
+    dplyr::filter(.data$NMonth == !!NMonth) %>%
+    dplyr::mutate(Flag = factor(
+      dplyr::if_else(
+        .data$Threshold == 0,
+        0L,
+        threshold_flag_map[as.character(.data$Threshold)]
+      ),
+      levels = vFlag
+    ))
 
-  # Separate bounds by line type
-  dfMeanLine <- dfPlotBounds %>%
-    dplyr::filter(.data$Threshold == 0)
-
-  dfBoundLines <- dfPlotBounds %>%
-    dplyr::filter(.data$Threshold != 0) %>%
-    dplyr::mutate(Threshold = factor(.data$Threshold))
+  dfAllBoundLines <- dfPlotBounds %>%
+    dplyr::mutate(
+      linetype_val = dplyr::if_else(.data$Threshold == 0, "solid", "dashed"),
+      Threshold = factor(.data$Threshold)
+    ) %>%
+    dplyr::arrange(match(.data$Flag, vFlag))
 
   # Flagged points for labeling
   dfLabels <- dfPlotData %>%
@@ -68,29 +77,19 @@ Visualize_Funnel <- function(dfFlagged, dfBounds, NMonth = NULL) {
 
   # Build plot
   p <- ggplot2::ggplot() +
-    # Layer 1: Bound curves (dashed)
+    # Layer 1: All bound curves (mean solid, thresholds dashed), ordered by Flag for plotly legend
     ggplot2::geom_line(
-      data = dfBoundLines,
+      data = dfAllBoundLines,
       ggplot2::aes(
         x = .data$Denominator,
         y = .data$Metric,
-        group = .data$Threshold
+        group = .data$Threshold,
+        color = .data$Flag,
+        linetype = .data$linetype_val
       ),
-      linetype = "dashed",
-      color = "gray50",
-      linewidth = 0.5
+      linewidth = 0.7
     ) +
-    # Layer 2: Mean line (solid)
-    ggplot2::geom_line(
-      data = dfMeanLine,
-      ggplot2::aes(
-        x = .data$Denominator,
-        y = .data$Metric
-      ),
-      linetype = "solid",
-      color = "black",
-      linewidth = 1
-    ) +
+    ggplot2::scale_linetype_identity() +
     # Layer 3: Site points
     ggplot2::geom_point(
       data = dfPlotData,
@@ -116,6 +115,7 @@ Visualize_Funnel <- function(dfFlagged, dfBounds, NMonth = NULL) {
     ) +
     # Color scale (blue-gray-red diverging palette)
     ggplot2::scale_color_manual(
+      breaks = as.character(vFlag),
       values = stats::setNames(
         grDevices::colorRampPalette(c(
           "#2166AC",
@@ -136,7 +136,7 @@ Visualize_Funnel <- function(dfFlagged, dfBounds, NMonth = NULL) {
     ggplot2::scale_x_log10() +
     # Labels
     ggplot2::labs(
-      title = paste0("Funnel Plot \u2014 Month: ", NMonth),
+      title = paste0("Funnel Plot - Month: ", NMonth),
       x = "Denominator (log scale)",
       y = "Metric",
       color = "Flag"
@@ -147,17 +147,4 @@ Visualize_Funnel <- function(dfFlagged, dfBounds, NMonth = NULL) {
     )
 
   p
-}
-
-# Internal helper: find largest month with >= 75% site coverage
-find_default_month <- function(df, threshold = 0.75) {
-  total_sites <- dplyr::n_distinct(df$GroupID)
-
-  df %>%
-    dplyr::group_by(.data$NMonth) %>%
-    dplyr::summarise(n_sites = dplyr::n_distinct(.data$GroupID), .groups = "drop") %>%
-    dplyr::mutate(pct_sites = .data$n_sites / total_sites) %>%
-    dplyr::filter(.data$pct_sites >= threshold) %>%
-    dplyr::pull(.data$NMonth) %>%
-    max()
 }

@@ -31,14 +31,17 @@ Set to \code{0} to disable sparse-month masking.}
 \item{...}{Additional arguments passed to \code{gsm.core::Flag()}.}
 }
 \value{
-\code{data.frame} with an additional \code{Flag} column and attributes
-\code{vThreshold} and \code{vFlag} for downstream use.
+All columns from \code{dfAnalyzed}, plus the following additions:
+\itemize{
+\item \code{Flag}: Integer from \code{vFlag} indicating how far \code{Score} falls
+from centre: \code{0} within bounds, negative below average, positive above
+average. \code{NA} for sparse months (see \code{nMinSiteFraction}).
+}
+Also carries attributes \code{vThreshold} and \code{vFlag} for downstream use.
 }
 \description{
-Wrapper around \code{gsm.core::Flag()}. Adds a Flag column to analyzed data
-identifying possible statistical outliers based on threshold comparisons.
-Also stores \code{vThreshold} and \code{vFlag} as attributes for downstream use
-by downstream visualization functions.
+Wrapper around \code{gsm.core::Flag()}. Stores \code{vThreshold} and \code{vFlag} as
+attributes for use by downstream visualization functions.
 
 Months where the number of distinct sites falls below \code{nMinSiteFraction}
 of the peak site count are considered statistically unreliable and have

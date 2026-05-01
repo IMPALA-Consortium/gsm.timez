@@ -20,6 +20,7 @@ steps:
       strOutputLabel: "Funnel Heatmap"
       strIcon: "th"
       bInteractive: true
+      nSites: 30
 
   - output: lChartsVisualize_Funnel
     name: gsm.timez::Widget

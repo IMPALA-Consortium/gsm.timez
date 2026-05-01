@@ -7,11 +7,13 @@
 Merge_ChartLists(...)
 }
 \arguments{
-\item{...}{Named chart lists to merge. Each should be a list keyed by MetricID,
-where each element is a list of charts.}
+\item{...}{Two or more chart lists to merge. Each should be a list keyed by
+MetricID (the workflow \code{meta.ID} string), where each element is a list of
+charts. Arguments do not need to be named.}
 }
 \value{
-A merged list with all charts combined per metric.
+A list keyed by MetricID containing all charts from all input lists
+for each metric. Metrics present in only some inputs are included unchanged.
 }
 \description{
 Combines chart lists by merging charts within each MetricID. Used to combine

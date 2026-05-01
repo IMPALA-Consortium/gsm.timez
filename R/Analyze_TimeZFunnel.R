@@ -1,40 +1,25 @@
 #' Calculate Funnel Plot Scores for Timeline Data
 #'
-#' This function takes the output from \code{\link{Timeline}} and calculates
-#' scores using the funnel plot methodology (Poisson-based normal approximation)
-#' as described in the Zink et al. paper. The score adjusts for sample size,
-#' so larger sites are held to tighter standards.
+#' Applies \code{gsm.core::Analyze_NormalApprox()} to each month of
+#' \code{dfTimeline}, producing a funnel plot score for each site-month
+#' combination.
 #'
-#' @param dfTimeline A data frame output from \code{\link{Timeline}}. Must
+#' @param dfTimeline A data frame output from [Timeline()]. Must
 #'   contain columns: \code{GroupID}, \code{GroupLevel}, \code{Numerator},
 #'   \code{Denominator}, and \code{NMonth}.
 #'
-#' @return The input data frame with all original columns preserved, plus
-#'   additional columns from \code{gsm.core::Analyze_NormalApprox}:
+#' @return All columns from [Timeline()], plus the following
+#'   additional columns:
 #'   \itemize{
 #'     \item \code{Metric}: The ratio of Numerator to Denominator
-#'       (Numerator / Denominator).
-#'     \item \code{OverallMetric}: The study-wide pooled rate at each month
-#'       (sum of Numerators / sum of Denominators).
-#'     \item \code{Factor}: The factor used in the normal approximation for
-#'       calculating bounds.
-#'     \item \code{Score}: The adjusted z-score that accounts for sample size.
-#'       Calculated as (Metric - OverallMetric) / SE, where SE is based on
-#'       Poisson variance assumptions.
+#'       (Numerator / Denominator). Computed before calling
+#'       \code{gsm.core::Analyze_NormalApprox}.
+#'     \item \code{OverallMetric}, \code{Factor}, \code{Score}: See
+#'       [gsm.core::Analyze_NormalApprox()] for definitions.
 #'   }
 #'
-#' @details
-#' This function applies \code{gsm.core::Analyze_NormalApprox()} to each
-#' month's cross-section of sites. The score is calculated using the funnel
-#' plot methodology:
+#' @seealso [gsm.core::Analyze_NormalApprox()], [Timeline()]
 #'
-#' \deqn{Score = \frac{Metric - OverallMetric}{\sqrt{OverallMetric \times Factor / Denominator}}}
-#'
-#' This approach assumes count data follows a Poisson distribution, where
-#' variance equals the mean. The key advantage over simple z-scores is that
-#' larger sites (higher Denominator) are expected to have less variability,
-#' so they receive narrower confidence bounds.
-#' 
 #' @export
 Analyze_TimeZFunnel <- function(dfTimeline) {
   # Validate input columns

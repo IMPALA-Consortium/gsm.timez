@@ -15,36 +15,36 @@ Widget(
 )
 }
 \arguments{
-\item{dfResults}{A stacked data frame with a MetricID column, typically
-Reporting_Results_allmonths from \code{\link[gsm.reporting:BindResults]{gsm.reporting::BindResults()}}.}
+\item{dfResults}{A stacked data frame with a \code{MetricID} column and all
+columns required by the visualization function.}
 
 \item{strVisualizeFun}{Character string specifying the visualization function
 to apply, including namespace (e.g., "gsm.timez::Visualize_Heatmap").}
 
-\item{strOutputLabel}{Character string for the chart tab label in the report
-(e.g., "Timeline", "Distribution").}
+\item{strOutputLabel}{Character string for the chart tab label in the report.}
 
-\item{strIcon}{Optional Font Awesome icon name (e.g., "chart-line"). If
-provided, the icon is prepended to the tab label.}
+\item{strIcon}{Optional Font Awesome icon name. If provided, the icon is
+prepended to the tab label.}
 
-\item{bInteractive}{Logical. If TRUE (default), creates fully interactive
-plotly charts. If FALSE, creates static plotly charts (no zoom, pan, hover)
-which render faster and produce smaller HTML output. Use FALSE for
-visualizations with many elements (e.g., heatmaps).}
+\item{bInteractive}{Logical. If \code{TRUE} (default), creates fully interactive
+plotly charts. If \code{FALSE}, creates static plotly charts (no zoom, pan,
+hover) which render faster and produce smaller HTML output. Use \code{FALSE} for
+visualizations with many elements.}
 
-\item{dfBounds}{Optional data frame with a \code{MetricID} column (e.g.,
-\code{Reporting_Bounds}). When provided, it is filtered to the current
-MetricID and passed as the second positional argument to the visualization
-function, before \code{...}. Use this for functions like
-\code{\link{Visualize_Funnel}} that require a separate bounds data frame.}
+\item{dfBounds}{Optional data frame with a \code{MetricID} column. When provided,
+it is filtered to the current MetricID and passed as the second positional
+argument to the visualization function, before \code{...}. Use this for
+functions like \code{\link[=Visualize_Funnel]{Visualize_Funnel()}} that require a separate bounds data
+frame.}
 
 \item{...}{Additional arguments passed to the visualization function.}
 }
 \value{
-A named list of plotly htmlwidget objects, keyed by MetricID.
+A named list keyed by MetricID. Each element is itself a named list
+keyed by \code{strOutputLabel}, containing a plotly htmlwidget object.
 }
 \description{
 Creates charts for each metric by applying a visualization function to
 stacked results data. The visualization function is specified as a string
-(e.g., "gsm.timez::Visualize_Heatmap") and resolved at runtime.
+(e.g. "gsm.timez::Visualize_Heatmap") and resolved at runtime.
 }

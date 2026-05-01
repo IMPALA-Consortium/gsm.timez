@@ -3,40 +3,22 @@
 #' Creates a line plot highlighting a single site's cumulative metric trajectory
 #' against all other sites, with colored dots marking flagged months.
 #'
-#' @param dfFlagged A data frame output from Flag() containing columns:
-#'   GroupID, NMonth, Metric, Flag. Must have `vFlag` attribute
+#' @param dfFlagged A data frame output from [Flag()] containing columns:
+#'   `GroupID`, `NMonth`, `Metric`, `Flag`, and (when `dfBounds` is provided)
+#'   `Denominator`. Must carry `vFlag` and `vThreshold` attributes
 #'   (set by `gsm.timez::Flag()`).
+#' @param dfBounds Optional. A data frame with pre-calculated funnel bounds from
+#'   [PredictBounds_TimeZFunnel()]. If provided, inner threshold
+#'   lines are drawn for the selected site based on its denominator at each month.
+#'   If `NULL` (default), no bounds are shown.
 #' @param strSiteID Character string specifying the site ID to highlight.
 #'   Must exist in `dfFlagged$GroupID`.
-#' @param dfBounds Optional. A data frame with pre-calculated funnel bounds from
-#'   \code{\link{PredictBounds_TimeZFunnel}}. If provided, inner threshold
-#'   lines are drawn for the selected site based on its denominator at each month.
-#'   If NULL (default), no bounds are shown.
 #'
-#' @return A ggplot2 object showing:
-#'   \itemize{
-#'     \item Background: All other sites as light gray lines
-#'     \item Foreground: The selected site's trajectory as a dark gray line
-#'     \item Points: Colored dots for flagged months (Flag != 0) using a
-#'       diverging blue-red color scheme
-#'   }
+#' @return A [ggplot2::ggplot()] object.
 #'
-#' @details
-#' This visualization provides a "spotlight" view of a single site, showing
-#' its trajectory in context of all other sites. The background sites provide
-#' reference for typical behavior, while the colored dots highlight months
-#' where the selected site was flagged for under-reporting (blue) or
-#' over-reporting (red).
-#'
-#' The color scheme uses:
-#' \itemize{
-#'   \item Blue shades for under-reporting (Flag = -2, -1)
-#'   \item Gray for values within limits (Flag = 0)
-#'   \item Red shades for over-reporting (Flag = 1, 2)
-#' }
-#'
-#' @seealso \code{\link{Flag}} for assigning flag categories,
-#'   \code{\link{Visualize_Heatmap}} for the heat map visualization.
+#' @seealso [Flag()] for assigning flag categories,
+#'   [PredictBounds_TimeZFunnel()] for calculating bounds,
+#'   [Visualize_Heatmap()] for the heat map visualization.
 #'
 #' @export
 Visualize_Site <- function(dfFlagged, dfBounds = NULL, strSiteID) {
@@ -129,7 +111,7 @@ Visualize_Site <- function(dfFlagged, dfBounds = NULL, strSiteID) {
     )
   }
 
-  # Layer 4: Selected site as dark gray line (on top of bounds)
+  # Layer 3: Selected site as dark gray line (on top of bounds)
   p <- p + ggplot2::geom_line(
     data = dfSelectedSite,
     color = "gray30",
@@ -137,7 +119,7 @@ Visualize_Site <- function(dfFlagged, dfBounds = NULL, strSiteID) {
     alpha = 0.8
   )
 
-  # Layer 5: Flagged points only (colored dots)
+  # Layer 4: Flagged points only (colored dots)
   if (nrow(dfFlaggedPoints) > 0) {
     p <- p + ggplot2::geom_point(
       data = dfFlaggedPoints,
@@ -147,7 +129,7 @@ Visualize_Site <- function(dfFlagged, dfBounds = NULL, strSiteID) {
     )
   }
 
-  # Layer 5: Last point for selected site (shows current status if not flagged)
+  # Layer 5: Last point for selected site (current status when not flagged)
   dfLastPoint <- dfSelectedSite %>%
     dplyr::filter(.data$NMonth == max(.data$NMonth)) %>%
     dplyr::filter(Flag == 0)

@@ -1,11 +1,9 @@
 #' Calculate Predicted Bounds for Analyze_TimeZFunnel Visualization
 #'
-#' This function calculates predicted Metric bounds for each month based on
-#' the Poisson-based funnel plot methodology from \code{\link{Analyze_TimeZFunnel}}.
-#' It applies \code{gsm.core::Analyze_NormalApprox_PredictBounds} to each month's
-#' cross-section, producing full funnel bounds data per month.
+#' Applies \code{gsm.core::Analyze_NormalApprox_PredictBounds()} to each month of
+#' \code{dfAnalyzed}, producing funnel plot bounds for each month.
 #'
-#' @param dfAnalyzed A data frame output from \code{\link{Analyze_TimeZFunnel}}.
+#' @param dfAnalyzed A data frame output from [Analyze_TimeZFunnel()].
 #'   Must contain columns: \code{NMonth}, \code{GroupID}, \code{GroupLevel},
 #'   \code{Numerator}, \code{Denominator}, and \code{Metric}.
 #' @param vThreshold Numeric vector of threshold values for bounds. Default is
@@ -28,19 +26,10 @@
 #'   Multiple rows are returned per month per threshold, covering the range
 #'   of Denominator values observed in the data.
 #'
-#' @details
-#' This function applies \code{gsm.core::Analyze_NormalApprox_PredictBounds()}
-#' to each month's cross-section using \code{group_modify()}, mirroring the
-#' pattern used in \code{\link{Analyze_TimeZFunnel}}.
-#'
-#' For each NMonth, filtering the output to that month gives a complete set
-#' of funnel bounds that can be used to create a traditional funnel plot
-#' (Metric vs Denominator).
-#'
-#' @seealso \code{\link{Analyze_TimeZFunnel}} for calculating funnel scores,
+#' @seealso [Analyze_TimeZFunnel()] for calculating funnel scores,
 #'   \code{gsm.core::Analyze_NormalApprox_PredictBounds} for the underlying
 #'   bounds calculation.
-#' 
+#'
 #' @export
 PredictBounds_TimeZFunnel <- function(dfAnalyzed, vThreshold = c(-3, -2, 2, 3), nMinSiteFraction = 0.2) {
   # Validate input columns

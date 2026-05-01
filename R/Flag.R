@@ -1,10 +1,8 @@
 #' Flag
 #'
 #' @description
-#' Wrapper around `gsm.core::Flag()`. Adds a Flag column to analyzed data
-#' identifying possible statistical outliers based on threshold comparisons.
-#' Also stores `vThreshold` and `vFlag` as attributes for downstream use
-#' by downstream visualization functions.
+#' Wrapper around `gsm.core::Flag()`. Stores `vThreshold` and `vFlag` as
+#' attributes for use by downstream visualization functions.
 #'
 #' Months where the number of distinct sites falls below `nMinSiteFraction`
 #' of the peak site count are considered statistically unreliable and have
@@ -24,8 +22,13 @@
 #'   Set to `0` to disable sparse-month masking.
 #' @param ... Additional arguments passed to `gsm.core::Flag()`.
 #'
-#' @return `data.frame` with an additional `Flag` column and attributes
-#'   `vThreshold` and `vFlag` for downstream use.
+#' @return All columns from `dfAnalyzed`, plus the following additions:
+#'   \itemize{
+#'     \item \code{Flag}: Integer from `vFlag` indicating how far `Score` falls
+#'       from centre: `0` within bounds, negative below average, positive above
+#'       average. `NA` for sparse months (see `nMinSiteFraction`).
+#'   }
+#'   Also carries attributes `vThreshold` and `vFlag` for downstream use.
 #'
 #' @seealso [gsm.core::Flag()], [PredictBounds_TimeZFunnel()]
 #'

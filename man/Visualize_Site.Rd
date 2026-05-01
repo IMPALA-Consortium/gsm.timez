@@ -7,46 +7,28 @@
 Visualize_Site(dfFlagged, dfBounds = NULL, strSiteID)
 }
 \arguments{
-\item{dfFlagged}{A data frame output from Flag() containing columns:
-GroupID, NMonth, Metric, Flag. Must have \code{vFlag} attribute
+\item{dfFlagged}{A data frame output from \code{\link[=Flag]{Flag()}} containing columns:
+\code{GroupID}, \code{NMonth}, \code{Metric}, \code{Flag}, and (when \code{dfBounds} is provided)
+\code{Denominator}. Must carry \code{vFlag} and \code{vThreshold} attributes
 (set by \code{gsm.timez::Flag()}).}
 
 \item{dfBounds}{Optional. A data frame with pre-calculated funnel bounds from
-\code{\link{PredictBounds_TimeZFunnel}}. If provided, inner threshold
+\code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}}. If provided, inner threshold
 lines are drawn for the selected site based on its denominator at each month.
-If NULL (default), no bounds are shown.}
+If \code{NULL} (default), no bounds are shown.}
 
 \item{strSiteID}{Character string specifying the site ID to highlight.
 Must exist in \code{dfFlagged$GroupID}.}
 }
 \value{
-A ggplot2 object showing:
-\itemize{
-\item Background: All other sites as light gray lines
-\item Foreground: The selected site's trajectory as a dark gray line
-\item Points: Colored dots for flagged months (Flag != 0) using a
-diverging blue-red color scheme
-}
+A \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object.
 }
 \description{
 Creates a line plot highlighting a single site's cumulative metric trajectory
 against all other sites, with colored dots marking flagged months.
 }
-\details{
-This visualization provides a "spotlight" view of a single site, showing
-its trajectory in context of all other sites. The background sites provide
-reference for typical behavior, while the colored dots highlight months
-where the selected site was flagged for under-reporting (blue) or
-over-reporting (red).
-
-The color scheme uses:
-\itemize{
-\item Blue shades for under-reporting (Flag = -2, -1)
-\item Gray for values within limits (Flag = 0)
-\item Red shades for over-reporting (Flag = 1, 2)
-}
-}
 \seealso{
-\code{\link{Flag}} for assigning flag categories,
-\code{\link{Visualize_Heatmap}} for the heat map visualization.
+\code{\link[=Flag]{Flag()}} for assigning flag categories,
+\code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}} for calculating bounds,
+\code{\link[=Visualize_Heatmap]{Visualize_Heatmap()}} for the heat map visualization.
 }

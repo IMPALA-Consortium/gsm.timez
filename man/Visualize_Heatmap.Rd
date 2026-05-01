@@ -2,45 +2,29 @@
 % Please edit documentation in R/Visualize_Heatmap.R
 \name{Visualize_Heatmap}
 \alias{Visualize_Heatmap}
-\title{Visualize Funnel Plot Results as Heat Map}
+\title{Visualize Flagged Months by Site}
 \usage{
-Visualize_Heatmap(dfFlagged)
+Visualize_Heatmap(dfFlagged, nSites = NULL)
 }
 \arguments{
-\item{dfFlagged}{A data frame output from Flag() applied to
-\code{\link{Analyze_TimeZFunnel}} output. Must contain columns:
-GroupID, NMonth, and Flag. Must also have \code{vFlag} attribute
-(set by \code{gsm.timez::Flag()}).}
+\item{dfFlagged}{A data frame output from \code{\link[=Flag]{Flag()}} applied to
+\code{\link[=Analyze_TimeZFunnel]{Analyze_TimeZFunnel()}} output. Must contain columns:
+\code{GroupID}, \code{NMonth}, and \code{Flag}. Must also carry \code{vFlag} attribute
+(set by \code{\link[=Flag]{Flag()}}).}
+
+\item{nSites}{Integer or \code{NULL}. Maximum number of sites to display. Sites
+are ranked by: (1) whether they were flagged in the most recent evaluated
+month, (2) total number of flagged months, (3) \code{GroupID} alphabetically.
+When \code{NULL} (the default) all sites are shown and no title is added to the
+plot.}
 }
 \value{
-A ggplot2 heat map object with:
-\itemize{
-\item X-axis: Time (NMonth)
-\item Y-axis: Sites (GroupID), sorted so sites flagged in the most recent
-month appear at the top, with ties broken by total number of flagged
-months (descending), then by GroupID
-\item Fill color: Flag category (Much Lower, Lower, Within Limits,
-Higher, Much Higher)
-}
+A \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object.
 }
 \description{
-Creates a heat map showing Flag categories for each site over time,
-matching the visualization style from Zink et al. (Figures 7 & 8).
-}
-\details{
-This visualization displays all sites and time periods in a single view,
-with each cell colored by its Flag value. This makes it easy to identify:
-\itemize{
-\item Sites with persistent outlier status across time
-\item Time periods when many sites became outliers
-\item The overall pattern of outliers in the study
-}
-
-The color scheme uses a diverging blue-gray-red palette: blue shades for
-under-reporting (Flag = -2, -1), gray for values within limits (Flag = 0),
-and red shades for over-reporting (Flag = 1, 2).
+Creates a heat map of site flags over time.
 }
 \seealso{
-\code{\link{Analyze_TimeZFunnel}} for calculating funnel scores,
-\code{\link{Flag}} for assigning flag categories.
+\code{\link[=Analyze_TimeZFunnel]{Analyze_TimeZFunnel()}} for calculating funnel scores,
+\code{\link[=Flag]{Flag()}} for assigning flag categories.
 }

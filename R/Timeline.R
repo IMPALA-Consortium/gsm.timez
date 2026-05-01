@@ -13,10 +13,10 @@
 #'   denominator, e.g., visits). This must contain a subject ID column and a
 #'   date column.
 #' @param strGroupCol The name of the column in \code{dfSubjects} used for
-#'   grouping subjects (e.g., "SiteID", "Treatment").
-#' @param strGroupLevel Optional character string specifying a subset level
-#'   within \code{strGroupCol} to be analyzed. If \code{NULL}, the full column
-#'   is used.
+#'   grouping subjects (e.g., "invid", "country").
+#' @param strGroupLevel Optional character string used as a label for the
+#'   grouping level, stored in the \code{GroupLevel} output column. If
+#'   \code{NULL}, defaults to the value of \code{strGroupCol}.
 #' @param strSubjectCol The name of the unique subject ID column in
 #'   \code{dfSubjects}.
 #' @param strNumeratorCol The name of the subject ID column in
@@ -52,11 +52,12 @@ Timeline <- function(
     strDenominatorCol = NULL,
     strNumeratorDateCol,
     strDenominatorDateCol) {
+  strGroupLevel <- if (is.null(strGroupLevel)) strGroupCol else strGroupLevel
+
   # dfSubjects
   #  - strSubjectCol
   #  - strGroupCol
   #  - strGroupLevel = NULL
-  strGroupLevel <- if (is.null(strGroupLevel)) strGroupCol else strGroupLevel
 
   dfSubjectsCols <- c(strSubjectCol, strGroupCol)
   # checking all columns exist

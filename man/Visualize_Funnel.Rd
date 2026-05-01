@@ -7,40 +7,31 @@
 Visualize_Funnel(dfFlagged, dfBounds, NMonth = NULL)
 }
 \arguments{
-\item{dfFlagged}{A data frame output from \code{\link{Flag}} applied to
-\code{\link{Analyze_TimeZFunnel}} output. Must contain columns:
+\item{dfFlagged}{A data frame output from \code{\link[=Flag]{Flag()}} applied to
+\code{\link[=Analyze_TimeZFunnel]{Analyze_TimeZFunnel()}} output. Must contain columns:
 \code{GroupID}, \code{NMonth}, \code{Denominator}, \code{Metric}, \code{Flag}.
 Must have \code{vFlag} attribute (set by \code{gsm.timez::Flag()}).}
 
-\item{dfBounds}{A data frame output from \code{\link{PredictBounds_TimeZFunnel}}.
+\item{dfBounds}{A data frame output from \code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}}.
 Must contain columns: \code{NMonth}, \code{Threshold}, \code{Denominator},
 \code{Metric}.}
 
 \item{NMonth}{Optional integer specifying which month to plot. If \code{NULL}
-(default), uses the largest month where at least 75\\% of sites are active,
-ensuring good site coverage in the plot.}
+(default), uses the largest month with at least the minimum fraction of
+sites active (as specified in \code{\link[=Flag]{Flag()}} and
+\code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}} via \code{nMinSiteFraction}). If
+provided, must meet the same criterion; an error is raised otherwise.}
 }
 \value{
-A ggplot2 object showing:
-\itemize{
-\item Funnel bound curves (dashed lines for thresholds, solid for mean)
-\item Site points colored by Flag value
-\item Labels for flagged sites (Flag != 0)
-}
+A \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object.
 }
 \description{
 Creates a classic funnel plot showing Metric vs Denominator with curved
 confidence bounds for a single month. Sites are plotted as points colored
 by their Flag value, with flagged sites labeled.
 }
-\details{
-This visualization shows a single month's cross-section as a traditional
-funnel plot. The x-axis shows Denominator (log scale), and the y-axis shows
-Metric. Funnel curves narrow as Denominator increases, reflecting the
-expectation that larger sites have less variability.
-}
 \seealso{
-\code{\link{Analyze_TimeZFunnel}} for calculating funnel scores,
-\code{\link{PredictBounds_TimeZFunnel}} for calculating bounds,
-\code{\link{Visualize_Heatmap}} for the heat map visualization across all months.
+\code{\link[=Analyze_TimeZFunnel]{Analyze_TimeZFunnel()}} for calculating funnel scores,
+\code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}} for calculating bounds,
+\code{\link[=Visualize_Heatmap]{Visualize_Heatmap()}} for the heat map visualization across all months.
 }
