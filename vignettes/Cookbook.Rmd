@@ -129,7 +129,7 @@ Metric values against their Denominator. The bounds are computed by
 `gsm.core::Analyze_NormalApprox_PredictBounds()` at each month:
 
 ```{r visualize-funnel, fig.width=8, fig.height=5}
-dfBounds <- gsm.timez::PredictBounds_TimeZFunnel(dfTimeZScore)
+dfBounds <- gsm.timez::PredictBounds_TimeZFunnel(dfTimeZScore, vThreshold = c(-1.5, -1, 2, 3))
 gsm.timez::Visualize_Funnel(dfFlagged, dfBounds = dfBounds)
 ```
 

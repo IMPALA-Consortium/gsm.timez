@@ -73,7 +73,7 @@ gsm.timez::Timeline(
   gsm.timez::Visualize_Heatmap(nSites = 30)
 ```
 
-<img src="man/figures/README-quick-start-1.png" alt="" width="100%" />
+<img src="man/figures/README-quick-start-plot-1.png" alt="" width="100%" />
 
 ## Quality Control
 

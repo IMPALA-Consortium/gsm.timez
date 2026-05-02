@@ -9,7 +9,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  dpi = 150
 )
 ```
 
@@ -52,7 +53,7 @@ pak::pak("IMPALA-Consortium/gsm.timez")
 
 ## Quick Start
 
-```{r quick-start, message=FALSE, warning=FALSE}
+```{r quick-start, message=FALSE, warning=FALSE, eval=FALSE}
 library(gsm.timez)
 library(dplyr)
 
@@ -75,6 +76,30 @@ gsm.timez::Timeline(
   gsm.timez::Analyze_TimeZFunnel() %>%
   gsm.timez::Flag(vThreshold = c(-1.5, -1, 2, 3)) %>%
   gsm.timez::Visualize_Heatmap(nSites = 30)
+```
+
+```{r quick-start-plot, message=FALSE, warning=FALSE, echo=FALSE, dev.args=list(bg="transparent")}
+library(gsm.timez)
+library(dplyr)
+
+dfSubjects <- clindata::rawplus_dm
+dfNumerator <- clindata::rawplus_ae
+dfDenominator <- clindata::rawplus_visdt %>%
+  dplyr::mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d"))
+
+gsm.timez::Timeline(
+  dfSubjects            = dfSubjects,
+  dfNumerator           = dfNumerator,
+  dfDenominator         = dfDenominator,
+  strGroupCol           = "invid",
+  strSubjectCol         = "subjid",
+  strNumeratorDateCol   = "aest_dt",
+  strDenominatorDateCol = "visit_dt"
+) %>%
+  gsm.timez::Analyze_TimeZFunnel() %>%
+  gsm.timez::Flag(vThreshold = c(-1.5, -1, 2, 3)) %>%
+  gsm.timez::Visualize_Heatmap(nSites = 30) +
+  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "transparent", colour = NA))
 ```
 
 ## Quality Control
