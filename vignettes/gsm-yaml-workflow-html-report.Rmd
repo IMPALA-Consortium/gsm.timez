@@ -28,7 +28,7 @@ lSource <- list(
   Source_STUDY = clindata::ctms_study,
   Source_SITE = clindata::ctms_site,
   Source_SUBJ = clindata::rawplus_dm,
-  Source_AE = clindata::rawplus_ae,
+  Source_AE = clindata::rawplus_ae %>% dplyr::select(-aetoxgr),
   # gsm.mapping expects a studyid column, but clindata::edc_data_pages uses
   # protocolname instead. DATAENT itself is not used by gsm.timez but is
   # required by gsm.mapping's AE workflow.

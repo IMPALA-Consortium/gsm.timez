@@ -42,16 +42,17 @@
 #'
 #' @export
 Timeline <- function(
-    dfSubjects,
-    dfNumerator,
-    dfDenominator,
-    strGroupCol,
-    strGroupLevel = NULL,
-    strSubjectCol,
-    strNumeratorCol = NULL,
-    strDenominatorCol = NULL,
-    strNumeratorDateCol,
-    strDenominatorDateCol) {
+  dfSubjects,
+  dfNumerator,
+  dfDenominator,
+  strGroupCol,
+  strGroupLevel = NULL,
+  strSubjectCol,
+  strNumeratorCol = NULL,
+  strDenominatorCol = NULL,
+  strNumeratorDateCol,
+  strDenominatorDateCol
+) {
   strGroupLevel <- if (is.null(strGroupLevel)) strGroupCol else strGroupLevel
 
   # dfSubjects

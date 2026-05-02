@@ -18,5 +18,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Donato Rolo \email{donato.rolo@roche.com}
 
+Authors:
+\itemize{
+  \item Donato Rolo \email{donato.rolo@roche.com}
+}
+
 }
 \keyword{internal}

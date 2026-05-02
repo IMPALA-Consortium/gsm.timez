@@ -10,7 +10,6 @@ License: MIT + file LICENSE
 URL: https://impala-consortium.github.io/gsm.timez
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Remotes:
     clindata=Gilead-BioStats/clindata@main,
     gsm.core=Gilead-BioStats/gsm.core@main,
@@ -37,3 +36,4 @@ Suggests:
     yaml
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

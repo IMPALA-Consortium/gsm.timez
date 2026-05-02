@@ -9,13 +9,14 @@
 #'
 #' @export
 Report_TimeZFunnel <- function(
-    lCharts = NULL,
-    dfResults = NULL,
-    dfMetrics = NULL,
-    dfGroups = NULL,
-    strOutputDir = getwd(),
-    strOutputFile = NULL,
-    strInputPath = system.file("report", "Report_TimeZFunnel.Rmd", package = "gsm.timez")) {
+  lCharts = NULL,
+  dfResults = NULL,
+  dfMetrics = NULL,
+  dfGroups = NULL,
+  strOutputDir = getwd(),
+  strOutputFile = NULL,
+  strInputPath = system.file("report", "Report_TimeZFunnel.Rmd", package = "gsm.timez")
+) {
   gsm.kri::Report_KRI(
     lCharts = lCharts,
     dfResults = dfResults,
