@@ -143,7 +143,7 @@ at each month:
 
 ``` r
 
-dfBounds <- gsm.timez::PredictBounds_TimeZFunnel(dfTimeZScore)
+dfBounds <- gsm.timez::PredictBounds_TimeZFunnel(dfTimeZScore, vThreshold = c(-1.5, -1, 2, 3))
 gsm.timez::Visualize_Funnel(dfFlagged, dfBounds = dfBounds)
 ```
 
@@ -158,7 +158,7 @@ sites, with colored dots marking flagged months:
 ``` r
 
 gsm.timez::Visualize_Site(dfFlagged, dfBounds = dfBounds, strSiteID = "0X159")
-#> Warning: Removed 179 rows containing missing values or values outside the scale range
+#> Warning: Removed 239 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```
 

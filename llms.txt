@@ -71,7 +71,7 @@ gsm.timez::Timeline(
   gsm.timez::Visualize_Heatmap(nSites = 30)
 ```
 
-![](reference/figures/README-quick-start-1.png)
+![](reference/figures/README-quick-start-plot-1.png)
 
 ## Quality Control
 

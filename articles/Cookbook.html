@@ -238,7 +238,7 @@ are computed by <code><a href="../reference/PredictBounds_TimeZFunnel.html">Pred
 <code><a href="https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox_PredictBounds.html" class="external-link">gsm.core::Analyze_NormalApprox_PredictBounds()</a></code> at each
 month:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dfBounds</span> <span class="op">&lt;-</span> <span class="fu">gsm.timez</span><span class="fu">::</span><span class="fu"><a href="../reference/PredictBounds_TimeZFunnel.html">PredictBounds_TimeZFunnel</a></span><span class="op">(</span><span class="va">dfTimeZScore</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">dfBounds</span> <span class="op">&lt;-</span> <span class="fu">gsm.timez</span><span class="fu">::</span><span class="fu"><a href="../reference/PredictBounds_TimeZFunnel.html">PredictBounds_TimeZFunnel</a></span><span class="op">(</span><span class="va">dfTimeZScore</span>, vThreshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">gsm.timez</span><span class="fu">::</span><span class="fu"><a href="../reference/Visualize_Funnel.html">Visualize_Funnel</a></span><span class="op">(</span><span class="va">dfFlagged</span>, dfBounds <span class="op">=</span> <span class="va">dfBounds</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Cookbook_files/figure-html/visualize-funnel-1.png" class="r-plt" alt="" width="768"></p>
 </div>
@@ -250,7 +250,7 @@ trajectory against all other sites, with colored dots marking flagged
 months:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">gsm.timez</span><span class="fu">::</span><span class="fu"><a href="../reference/Visualize_Site.html">Visualize_Site</a></span><span class="op">(</span><span class="va">dfFlagged</span>, dfBounds <span class="op">=</span> <span class="va">dfBounds</span>, strSiteID <span class="op">=</span> <span class="st">"0X159"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 179 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 239 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="Cookbook_files/figure-html/visualize-site-1.png" class="r-plt" alt="" width="768"></p>
 <p>For YAML workflow integration and HTML report generation, see
