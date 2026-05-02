@@ -4,12 +4,24 @@
 \name{gsm.timez-package}
 \alias{gsm.timez}
 \alias{gsm.timez-package}
-\title{gsm.timez: What the Package Does (One Line, Title Case)}
+\title{gsm.timez: gsm.timez - Timeline Z-Score Funnel Analysis GSM Extension}
 \description{
-What the package does (one paragraph).
+A GSM extension for longitudinal site monitoring. Applies funnel plot scoring across sequential months to detect sites with unusual cumulative event trajectories.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://impala-consortium.github.io/gsm.timez}
+}
+
 }
 \author{
 \strong{Maintainer}: Donato Rolo \email{donato.rolo@roche.com}
+
+Authors:
+\itemize{
+  \item Donato Rolo \email{donato.rolo@roche.com}
+}
 
 }
 \keyword{internal}

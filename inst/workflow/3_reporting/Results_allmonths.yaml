@@ -1,0 +1,29 @@
+meta:
+  Type: Reporting
+  ID: Results_allmonths
+  Description: Full time series results (all months) for custom timeline visualizations
+
+spec:
+  Mapped_STUDY:
+    GroupID:
+      required: true
+      type: character
+
+steps:
+  - output: vGroupID
+    name: dplyr::pull
+    params:
+      .data: Mapped_STUDY
+      var: GroupID
+
+  - output: strStudyID
+    name: base::unique
+    params:
+      x: vGroupID
+
+  - output: Reporting_Results_allmonths
+    name: gsm.reporting::BindResults
+    params:
+      lAnalysis: lAnalyzed
+      strName: Flagged
+      strStudyID: strStudyID

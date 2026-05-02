@@ -1,20 +1,26 @@
 Package: gsm.timez
-Title: What the Package Does (One Line, Title Case)
+Title: gsm.timez - Timeline Z-Score Funnel Analysis GSM Extension
 Version: 0.0.0.9000
 Authors@R: 
     person("Donato", "Rolo", , "donato.rolo@roche.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: A GSM extension for longitudinal site monitoring. Applies funnel
+    plot scoring across sequential months to detect sites with unusual
+    cumulative event trajectories.
 License: MIT + file LICENSE
+URL: https://impala-consortium.github.io/gsm.timez
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Remotes:
     clindata=Gilead-BioStats/clindata@main,
     gsm.core=Gilead-BioStats/gsm.core@main,
-    gsm.mapping=Gilead-BioStats/gsm.mapping@main
+    gsm.mapping=Gilead-BioStats/gsm.mapping@main,
+    gsm.reporting=Gilead-BioStats/gsm.reporting@main,
+    gsm.kri=Gilead-BioStats/gsm.kri@main
 Imports:
     dplyr,
+    fontawesome,
     ggplot2,
+    plotly,
     tidyr,
     slider,
     purrr,
@@ -23,7 +29,11 @@ Suggests:
     testthat (>= 3.0.0),
     clindata,
     gsm.mapping,
+    gsm.reporting,
+    gsm.kri,
     knitr,
-    rmarkdown
+    DT,
+    yaml
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

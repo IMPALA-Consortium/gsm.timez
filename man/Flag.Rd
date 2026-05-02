@@ -6,39 +6,48 @@
 \usage{
 Flag(
   dfAnalyzed,
-  strColumn = "Score",
   vThreshold = c(-3, -2, 2, 3),
   vFlag = c(-2, -1, 0, 1, 2),
-  vFlagOrder = c(2, -2, 1, -1, 0),
-  vRiskScoreWeight = NULL,
-  nAccrualThreshold = NULL,
-  strAccrualMetric = NULL
+  nMinSiteFraction = 0.2,
+  ...
 )
 }
 \arguments{
-\item{dfAnalyzed}{\code{data.frame} where flags should be added.}
+\item{dfAnalyzed}{\code{data.frame} where flags should be added. Must contain
+columns \code{NMonth} and \code{GroupID} for sparse-month detection.}
 
-\item{strColumn}{\code{character} Name of the column to use for thresholding. Default: \code{"Score"}}
+\item{vThreshold}{\code{numeric} Vector of threshold values in ascending order.
+Default: \code{c(-3, -2, 2, 3)}.}
 
-\item{vThreshold}{\code{numeric} Vector of numeric values representing threshold values. Default is \code{c(-3,-2,2,3)} which is typical for z-scores.}
+\item{vFlag}{\code{numeric} Vector of flag values. Must have length equal to
+\code{length(vThreshold) + 1}. Default: \code{c(-2, -1, 0, 1, 2)}.}
 
-\item{vFlag}{\code{numeric} Vector of flag values. There must be one more item in Flag than thresholds - that is \code{length(vThreshold)+1 == length(vFlagValues)}. Default is \code{c(-2,-1,0,1,2)}, which is typical for z-scores.}
+\item{nMinSiteFraction}{Minimum fraction of peak site count required to
+return a non-\code{NA} flag for a month. Months where the number of distinct
+\code{GroupID}s is below this fraction of the maximum are returned with
+\code{Flag = NA}. Default is \code{0.2} (20\\%), matching \code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}}.
+Set to \code{0} to disable sparse-month masking.}
 
-\item{vFlagOrder}{\code{numeric} Vector of ordered flag values. Output data.frame will be sorted based on flag column using the order provided. NULL (or values that don't match vFlag) will leave the data unsorted. Must have identical values to vFlag. Default is \code{c(2,-2,1,-1,0)} which puts largest z-score outliers first in the data set.}
-
-\item{vRiskScoreWeight}{\code{numeric} Vector of weights to apply to each flag value. If provided, the output data.frame will have an additional column \code{Weight} with the corresponding weight for each flag. Default: \code{NULL}.}
-
-\item{nAccrualThreshold}{\code{numeric} Specifies the minimum value required to return a \code{score} and calculate a \code{flag}. Default: NULL}
-
-\item{strAccrualMetric}{\code{character} Specifies the Metric to apply \code{nAccrualThreshold} to in order to determine the validity of a flag. Options are "Numerator", "Denominator" or "Difference". If "Difference" is specified, the threshold is based on the difference between the Denominator and the Numerator for a given Group. Default: \code{NULL}.}
+\item{...}{Additional arguments passed to \code{gsm.core::Flag()}.}
 }
 \value{
-\code{data.frame} with an additional \code{Flag} column.
+All columns from \code{dfAnalyzed}, plus the following additions:
+\itemize{
+\item \code{Flag}: Integer from \code{vFlag} indicating how far \code{Score} falls
+from centre: \code{0} within bounds, negative below average, positive above
+average. \code{NA} for sparse months (see \code{nMinSiteFraction}).
+}
+Also carries attributes \code{vThreshold} and \code{vFlag} for downstream use.
 }
 \description{
-Alias for \code{gsm.core::Flag()}. Adds a Flag column to analyzed data identifying
-possible statistical outliers based on threshold comparisons.
+Wrapper around \code{gsm.core::Flag()}. Stores \code{vThreshold} and \code{vFlag} as
+attributes for use by downstream visualization functions.
+
+Months where the number of distinct sites falls below \code{nMinSiteFraction}
+of the peak site count are considered statistically unreliable and have
+their \code{Flag} set to \code{NA}, consistent with the \code{NA} bounds returned by
+\code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}} for the same months.
 }
 \seealso{
-\code{\link[gsm.core:Flag]{gsm.core::Flag()}}
+\code{\link[gsm.core:Flag]{gsm.core::Flag()}}, \code{\link[=PredictBounds_TimeZFunnel]{PredictBounds_TimeZFunnel()}}
 }

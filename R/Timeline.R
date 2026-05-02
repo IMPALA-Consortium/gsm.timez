@@ -13,10 +13,10 @@
 #'   denominator, e.g., visits). This must contain a subject ID column and a
 #'   date column.
 #' @param strGroupCol The name of the column in \code{dfSubjects} used for
-#'   grouping subjects (e.g., "SiteID", "Treatment").
-#' @param strGroupLevel Optional character string specifying a subset level
-#'   within \code{strGroupCol} to be analyzed. If \code{NULL}, the full column
-#'   is used.
+#'   grouping subjects (e.g., "invid", "country").
+#' @param strGroupLevel Optional character string used as a label for the
+#'   grouping level, stored in the \code{GroupLevel} output column. If
+#'   \code{NULL}, defaults to the value of \code{strGroupCol}.
 #' @param strSubjectCol The name of the unique subject ID column in
 #'   \code{dfSubjects}.
 #' @param strNumeratorCol The name of the subject ID column in
@@ -40,51 +40,25 @@
 #'     \item{NMonth}{Sequential month number for the group (1, 2, 3, ...).}
 #'   }
 #'
-#' @examples
-#' library(dplyr)
-#'
-#' # Example data
-#' dfSubjects <- data.frame(
-#'   SubjectID = c(1, 2, 3),
-#'   SiteID = c("A", "A", "B")
-#' )
-#' dfNumerator <- data.frame(
-#'   SubjectID = c(1, 1, 2, 3),
-#'   EventDate = as.Date(c("2022-01-01", "2022-01-15", "2022-02-01", "2022-02-15"))
-#' )
-#' dfDenominator <- data.frame(
-#'   SubjectID = c(1, 1, 2, 2, 3),
-#'   VisitDate = as.Date(c("2022-01-01", "2022-01-20", "2022-01-15", "2022-02-01", "2022-02-01"))
-#' )
-#'
-#' # Generate site-level timeline
-#' Timeline(
-#'   dfSubjects = dfSubjects,
-#'   dfNumerator = dfNumerator,
-#'   dfDenominator = dfDenominator,
-#'   strGroupCol = "SiteID",
-#'   strSubjectCol = "SubjectID",
-#'   strNumeratorDateCol = "EventDate",
-#'   strDenominatorDateCol = "VisitDate"
-#' )
-#'
 #' @export
 Timeline <- function(
-    dfSubjects,
-    dfNumerator,
-    dfDenominator,
-    strGroupCol,
-    strGroupLevel = NULL,
-    strSubjectCol,
-    strNumeratorCol = NULL,
-    strDenominatorCol = NULL,
-    strNumeratorDateCol,
-    strDenominatorDateCol) {
+  dfSubjects,
+  dfNumerator,
+  dfDenominator,
+  strGroupCol,
+  strGroupLevel = NULL,
+  strSubjectCol,
+  strNumeratorCol = NULL,
+  strDenominatorCol = NULL,
+  strNumeratorDateCol,
+  strDenominatorDateCol
+) {
+  strGroupLevel <- if (is.null(strGroupLevel)) strGroupCol else strGroupLevel
+
   # dfSubjects
   #  - strSubjectCol
   #  - strGroupCol
   #  - strGroupLevel = NULL
-  strGroupLevel <- if (is.null(strGroupLevel)) strGroupCol else strGroupLevel
 
   dfSubjectsCols <- c(strSubjectCol, strGroupCol)
   # checking all columns exist

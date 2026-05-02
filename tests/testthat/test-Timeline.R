@@ -1,4 +1,20 @@
-# Tests for Timeline function - site-level aggregation output
+# Tests for Timeline function
+#
+# - Output structure
+#     - column names match expected schema
+# - Row uniqueness
+#     - one row per site-month combination
+# - Site coverage
+#     - all sites with visit data are represented
+# - Denominator (cumulative visits)
+#     - monotonically non-decreasing within each site
+#     - aggregates cumulative visits correctly across subjects
+# - NMonth numbering
+#     - sequential month index per site
+# - Numerator (cumulative events)
+#     - aggregates cumulative events correctly across subjects
+# - Edge cases
+#     - subjects with no events (Numerator = 0)
 
 test_that("Column names match expected site-level output", {
   df <-
@@ -6,7 +22,7 @@ test_that("Column names match expected site-level output", {
       dfSubjects = clindata::rawplus_dm,
       dfNumerator = clindata::rawplus_ae,
       dfDenominator = clindata::rawplus_visdt %>% mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d")),
-      strGroupCol = "siteid",
+      strGroupCol = "invid",
       strSubjectCol = "subjid",
       strNumeratorDateCol = "aest_dt",
       strDenominatorDateCol = "visit_dt"
@@ -31,7 +47,7 @@ test_that("Timeline returns one row per site-month combination", {
       dfSubjects = dm,
       dfNumerator = clindata::rawplus_ae,
       dfDenominator = visits,
-      strGroupCol = "siteid",
+      strGroupCol = "invid",
       strSubjectCol = "subjid",
       strNumeratorDateCol = "aest_dt",
       strDenominatorDateCol = "visit_dt"
@@ -55,7 +71,7 @@ test_that("Timeline contains all sites from subjects with visit data", {
       dfSubjects = dm,
       dfNumerator = clindata::rawplus_ae,
       dfDenominator = visits,
-      strGroupCol = "siteid",
+      strGroupCol = "invid",
       strSubjectCol = "subjid",
       strNumeratorDateCol = "aest_dt",
       strDenominatorDateCol = "visit_dt"
@@ -69,8 +85,8 @@ test_that("Timeline contains all sites from subjects with visit data", {
 
   expected_sites <- dm %>%
     filter(subjid %in% subjects_with_visits) %>%
-    distinct(siteid) %>%
-    pull(siteid)
+    distinct(invid) %>%
+    pull(invid)
 
   expect_setequal(unique(df$GroupID), expected_sites)
 })
@@ -86,7 +102,7 @@ test_that("denominator (cumulative visits) is monotonically non-decreasing per s
       dfSubjects = dm,
       dfNumerator = clindata::rawplus_ae,
       dfDenominator = visits,
-      strGroupCol = "siteid",
+      strGroupCol = "invid",
       strSubjectCol = "subjid",
       strNumeratorDateCol = "aest_dt",
       strDenominatorDateCol = "visit_dt"

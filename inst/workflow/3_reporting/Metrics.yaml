@@ -1,0 +1,11 @@
+meta:
+  Type: Reporting
+  ID: Metrics
+  Description: Create metric metadata for reporting
+  Priority: 1
+
+steps:
+  - output: Reporting_Metrics
+    name: gsm.reporting::MakeMetric
+    params:
+      lWorkflows: lWorkflows

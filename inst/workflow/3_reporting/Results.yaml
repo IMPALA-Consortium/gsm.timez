@@ -1,0 +1,41 @@
+meta:
+  Type: Reporting
+  ID: Results
+  Description: Stack timeline analysis results for reporting
+  Priority: 1
+
+spec:
+  Mapped_STUDY:
+    GroupID:
+      type: character
+
+steps:
+  # Extract StudyID from Mapped_STUDY
+  - output: vGroupID
+    name: dplyr::pull
+    params:
+      .data: Mapped_STUDY
+      var: GroupID
+  - output: strStudyID
+    name: base::unique
+    params:
+      x: vGroupID
+
+  - output: dfResultsRaw
+    name: gsm.reporting::BindResults
+    params:
+      lAnalysis: lAnalyzed
+      strName: Flagged
+      strStudyID: strStudyID
+
+  # Latest month only for default charts
+  - output: Reporting_Results
+    name: gsm.core::RunQuery
+    params:
+      df: dfResultsRaw
+      strQuery: >
+        SELECT * FROM df AS d1 
+        WHERE NMonth = (
+          SELECT MAX(NMonth) FROM df AS d2 
+          WHERE d2.GroupID = d1.GroupID AND d2.MetricID = d1.MetricID
+        )

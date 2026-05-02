@@ -1,14 +1,63 @@
 #' Flag
 #'
 #' @description
-#' Alias for `gsm.core::Flag()`. Adds a Flag column to analyzed data identifying
-#' possible statistical outliers based on threshold comparisons.
+#' Wrapper around `gsm.core::Flag()`. Stores `vThreshold` and `vFlag` as
+#' attributes for use by downstream visualization functions.
 #'
-#' @inheritParams gsm.core::Flag
+#' Months where the number of distinct sites falls below `nMinSiteFraction`
+#' of the peak site count are considered statistically unreliable and have
+#' their `Flag` set to `NA`, consistent with the `NA` bounds returned by
+#' [PredictBounds_TimeZFunnel()] for the same months.
 #'
-#' @return `data.frame` with an additional `Flag` column.
+#' @param dfAnalyzed `data.frame` where flags should be added. Must contain
+#'   columns `NMonth` and `GroupID` for sparse-month detection.
+#' @param vThreshold `numeric` Vector of threshold values in ascending order.
+#'   Default: `c(-3, -2, 2, 3)`.
+#' @param vFlag `numeric` Vector of flag values. Must have length equal to
+#'   `length(vThreshold) + 1`. Default: `c(-2, -1, 0, 1, 2)`.
+#' @param nMinSiteFraction Minimum fraction of peak site count required to
+#'   return a non-`NA` flag for a month. Months where the number of distinct
+#'   `GroupID`s is below this fraction of the maximum are returned with
+#'   `Flag = NA`. Default is `0.2` (20\%), matching [PredictBounds_TimeZFunnel()].
+#'   Set to `0` to disable sparse-month masking.
+#' @param ... Additional arguments passed to `gsm.core::Flag()`.
 #'
-#' @seealso [gsm.core::Flag()]
+#' @return All columns from `dfAnalyzed`, plus the following additions:
+#'   \itemize{
+#'     \item \code{Flag}: Integer from `vFlag` indicating how far `Score` falls
+#'       from centre: `0` within bounds, negative below average, positive above
+#'       average. `NA` for sparse months (see `nMinSiteFraction`).
+#'   }
+#'   Also carries attributes `vThreshold` and `vFlag` for downstream use.
+#'
+#' @seealso [gsm.core::Flag()], [PredictBounds_TimeZFunnel()]
 #'
 #' @export
-Flag <- gsm.core::Flag
+Flag <- function(dfAnalyzed,
+                 vThreshold = c(-3, -2, 2, 3),
+                 vFlag = c(-2, -1, 0, 1, 2),
+                 nMinSiteFraction = 0.2,
+                 ...) {
+  result <- gsm.core::Flag(
+    dfAnalyzed = dfAnalyzed,
+    vThreshold = vThreshold,
+    vFlag = vFlag,
+    ...
+  )
+
+  if (nMinSiteFraction > 0) {
+    sparse_months <- GetSparseMonths(result, nMinSiteFraction)
+    result <- result %>%
+      dplyr::left_join(
+        sparse_months %>% dplyr::select("NMonth", "sparse"),
+        by = "NMonth"
+      ) %>%
+      dplyr::mutate(Flag = dplyr::if_else(.data$sparse, NA_integer_, .data$Flag)) %>%
+      dplyr::select(-"sparse")
+  }
+
+  attr(result, "vThreshold") <- vThreshold
+  attr(result, "vFlag") <- vFlag
+
+  result
+}
