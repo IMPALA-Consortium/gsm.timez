@@ -1,4 +1,12 @@
 # Tests for Flag function
+#
+# - Output structure
+#     - Flag column is present
+#     - vThreshold and vFlag stored as attributes
+# - Sparse month handling
+#     - Flag = NA for months below nMinSiteFraction
+#     - nMinSiteFraction = 0 disables NA masking
+# - Integration with clindata
 
 make_analyzed <- function(group_ids, nmonths, numerator = 10, denominator = 100) {
   n <- length(group_ids)

@@ -3,8 +3,11 @@ Title: gsm.timez - Timeline Z-Score Funnel Analysis GSM Extension
 Version: 0.0.0.9000
 Authors@R: 
     person("Donato", "Rolo", , "donato.rolo@roche.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: A GSM extension for longitudinal site monitoring. Applies funnel
+    plot scoring across sequential months to detect sites with unusual
+    cumulative event trajectories.
 License: MIT + file LICENSE
+URL: https://impala-consortium.github.io/gsm.timez
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

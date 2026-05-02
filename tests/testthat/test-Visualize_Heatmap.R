@@ -1,4 +1,19 @@
-# Tests for Visualize_Heatmap function (heat map implementation)
+# Tests for Visualize_Heatmap function
+#
+# - Return type
+#     - returns a ggplot object
+#     - plot can be built without errors
+# - Plot structure
+#     - uses GeomTile layer
+#     - NMonth on x-axis, GroupID on y-axis
+#     - Flag used as fill colour
+#     - Flag converted to factor with correct levels (-2 to 2)
+#     - y-axis is reversed (alphabetical top-to-bottom)
+# - Integration with clindata
+# - nSites argument
+#     - nSites = N limits displayed sites and adds informative title
+#     - nSites = NULL shows all sites with no title
+#     - nSites > total shows all sites with correct title
 
 # Helper to create test data using funnel scoring
 create_flagged_funnel_data <- function() {

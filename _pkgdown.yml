@@ -1,17 +1,17 @@
-url: ~
+url: https://impala-consortium.github.io/gsm.timez/
 template:
   bootstrap: 5
 
 navbar:
   structure:
     left:
-      - reference
       - articles
-      - sample-reports
+      - sample-report
+      - reference
     right:
       - search
       - github
   components:
-    sample-reports:
-      text: Sample Reports
+    sample-report:
+      text: Sample Report
       href: articles/Report_TimeZFunnel.html

@@ -1,0 +1,146 @@
+---
+title: "Cookbook"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cookbook}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+`gsm.timez` extends the GSM ecosystem with longitudinal site-level monitoring.
+Where standard GSM metrics provide a cross-sectional snapshot of each site's
+performance, `gsm.timez` tracks how cumulative event rates evolve month by
+month, applying `gsm.core::Analyze_NormalApprox()` at each time step to flag
+sites whose trajectory diverges from the study-wide trend.
+
+This vignette provides an overview of the main functions in `gsm.timez` with
+usage examples.
+
+## Setup
+
+```{r setup, message=FALSE}
+library(gsm.timez)
+library(dplyr)
+```
+
+## Data Preparation
+
+The examples use `clindata` sample data. Install it from GitHub
+([Gilead-BioStats/clindata](https://github.com/Gilead-BioStats/clindata)) to
+explore the input datasets (`rawplus_dm`, `rawplus_ae`, `rawplus_visdt`) and
+understand the expected column structure.
+
+```{r data-prep}
+dfSubjects <- clindata::rawplus_dm
+
+dfNumerator <- clindata::rawplus_ae
+
+dfDenominator <- clindata::rawplus_visdt %>%
+  dplyr::mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d"))
+```
+
+## Complete Pipeline
+
+The full analysis chain from raw data to visualization:
+
+```{r complete-pipeline}
+gsm.timez::Timeline(
+  dfSubjects            = dfSubjects,
+  dfNumerator           = dfNumerator,
+  dfDenominator         = dfDenominator,
+  strGroupCol           = "invid",
+  strSubjectCol         = "subjid",
+  strNumeratorDateCol   = "aest_dt",
+  strDenominatorDateCol = "visit_dt"
+) %>%
+  gsm.timez::Analyze_TimeZFunnel() %>%
+  gsm.timez::Flag(vThreshold = c(-1.5, -1, 2, 3)) %>%
+  gsm.timez::Visualize_Heatmap(nSites = 10)
+```
+
+## Step-by-Step Breakdown
+
+The following sections walk through each function in the pipeline individually.
+
+### Timeline
+
+`Timeline()` generates a site-level timeline of cumulative numerator events over
+sequential months, producing one row per site-month combination:
+
+```{r timeline-basic}
+dfTimeline <- gsm.timez::Timeline(
+  dfSubjects            = dfSubjects,
+  dfNumerator           = dfNumerator,
+  dfDenominator         = dfDenominator,
+  strGroupCol           = "invid",
+  strSubjectCol         = "subjid",
+  strNumeratorDateCol   = "aest_dt",
+  strDenominatorDateCol = "visit_dt"
+)
+
+knitr::kable(head(dfTimeline))
+```
+
+### Analyze_TimeZFunnel
+
+`Analyze_TimeZFunnel()` applies `gsm.core::Analyze_NormalApprox()` at each
+monthly cross-section to calculate a funnel plot score for each site:
+
+```{r zscore-basic}
+dfTimeZScore <- gsm.timez::Analyze_TimeZFunnel(dfTimeline)
+```
+
+### Flag
+
+`Flag()` adds a `Flag` column identifying statistical outliers based on z-score
+thresholds:
+
+```{r flag}
+dfFlagged <- gsm.timez::Flag(dfTimeZScore, vThreshold = c(-1.5, -1, 2, 3))
+```
+
+### Visualize_Heatmap
+
+`Visualize_Heatmap()` creates a heatmap showing each site's flag status over
+time:
+
+```{r heatmap-height, include=FALSE}
+# Calculate height of the heatmap below so that all sites fit
+nSitesHeatmap <- dplyr::n_distinct(dfFlagged$GroupID)
+figHeightHeatmap <- nSitesHeatmap * 0.4 + 2
+```
+
+```{r visualize-heatmap, fig.width=8, fig.height=figHeightHeatmap}
+gsm.timez::Visualize_Heatmap(dfFlagged)
+```
+
+### Visualize_Funnel
+
+`Visualize_Funnel()` creates a funnel plot for a selected month, showing site
+Metric values against their Denominator. The bounds are computed by
+`PredictBounds_TimeZFunnel()`, which applies
+`gsm.core::Analyze_NormalApprox_PredictBounds()` at each month:
+
+```{r visualize-funnel, fig.width=8, fig.height=5}
+dfBounds <- gsm.timez::PredictBounds_TimeZFunnel(dfTimeZScore)
+gsm.timez::Visualize_Funnel(dfFlagged, dfBounds = dfBounds)
+```
+
+### Visualize_Site
+
+`Visualize_Site()` plots a single site's cumulative metric trajectory against
+all other sites, with colored dots marking flagged months:
+
+```{r visualize-site, fig.width=8, fig.height=5}
+gsm.timez::Visualize_Site(dfFlagged, dfBounds = dfBounds, strSiteID = "0X159")
+```
+
+For YAML workflow integration and HTML report generation, see
+`vignette("gsm-workflow", package = "gsm.timez")`.

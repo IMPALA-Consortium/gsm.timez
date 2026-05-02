@@ -1,4 +1,8 @@
 # Tests for Merge_ChartLists function
+#
+# - Merging behaviour
+#     - combines charts per metric when both lists share the same metric names
+#     - handles metrics present in only one list
 
 test_that("Merge_ChartLists combines charts per metric", {
   list1 <- list(Metric_A = list(chart1 = "a"), Metric_B = list(chart1 = "b"))

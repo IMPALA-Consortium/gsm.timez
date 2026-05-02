@@ -1,4 +1,19 @@
 # Tests for PredictBounds_TimeZFunnel function
+#
+# - Output structure
+#     - returns correct column names
+# - Threshold handling
+#     - always includes threshold = 0 (mean line)
+# - Row generation
+#     - produces multiple rows per NMonth x Threshold combination
+# - Error handling
+#     - errors on missing required columns
+# - Sparse month handling
+#     - Metric = NA for months below nMinSiteFraction
+#     - nMinSiteFraction = 0 disables NA behaviour
+# - Correctness against gsm.core
+#     - single-month output matches direct Analyze_NormalApprox_PredictBounds call
+# - Integration with clindata
 
 test_that("PredictBounds_TimeZFunnel returns correct column names", {
   skip_if_not_installed("gsm.core")

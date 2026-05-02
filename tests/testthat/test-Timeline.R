@@ -1,4 +1,20 @@
-# Tests for Timeline function - site-level aggregation output
+# Tests for Timeline function
+#
+# - Output structure
+#     - column names match expected schema
+# - Row uniqueness
+#     - one row per site-month combination
+# - Site coverage
+#     - all sites with visit data are represented
+# - Denominator (cumulative visits)
+#     - monotonically non-decreasing within each site
+#     - aggregates cumulative visits correctly across subjects
+# - NMonth numbering
+#     - sequential month index per site
+# - Numerator (cumulative events)
+#     - aggregates cumulative events correctly across subjects
+# - Edge cases
+#     - subjects with no events (Numerator = 0)
 
 test_that("Column names match expected site-level output", {
   df <-

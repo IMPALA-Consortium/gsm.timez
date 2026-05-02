@@ -70,7 +70,7 @@ gsm.timez::Timeline(
 ) %>%
   gsm.timez::Analyze_TimeZFunnel() %>%
   gsm.timez::Flag(vThreshold = c(-1.5, -1, 2, 3)) %>%
-  gsm.timez::Visualize_Heatmap()
+  gsm.timez::Visualize_Heatmap(nSites = 30)
 ```
 
 <img src="man/figures/README-quick-start-1.png" alt="" width="100%" />
@@ -96,5 +96,6 @@ particular, we do the following during early development:
 - **Contributor Guidelines** - Detailed contributor guidelines including
   step-by-step processes for code development and releases are provided
   as a vignette.
-- **Code Demonstration** - Cookbook Vignette provides demos and
-  explanations for code usage.
+- **Code Demonstration** - [Cookbook
+  Vignette](https://impala-consortium.github.io/gsm.timez/articles/Cookbook.html)
+  provides demos and explanations for code usage.

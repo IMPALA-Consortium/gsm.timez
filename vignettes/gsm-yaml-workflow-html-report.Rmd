@@ -1,0 +1,123 @@
+---
+title: "GSM YAML Workflow: HTML Report"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GSM YAML Workflow: HTML Report}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r vignette-setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(gsm.timez)
+library(gsm.core)
+library(gsm.mapping)
+```
+
+This vignette walks through the end-to-end GSM YAML workflow to generate an
+HTML report for the timeline KRI using the funnel-based z-score method. It
+follows the standard four-phase GSM pipeline: mapping raw data into a
+standardised layer, running the metric analysis, assembling the reporting
+data, and rendering the HTML output. The result is the
+[Sample Report](Report_TimeZFunnel.html) linked in the navbar.
+
+## Prepare Source Data
+
+```{r prepare-source, message=FALSE}
+lSource <- list(
+  Source_STUDY = clindata::ctms_study,
+  Source_SITE = clindata::ctms_site,
+  Source_SUBJ = clindata::rawplus_dm,
+  Source_AE = clindata::rawplus_ae,
+  # gsm.mapping expects a studyid column, but clindata::edc_data_pages uses
+  # protocolname instead. DATAENT itself is not used by gsm.timez but is
+  # required by gsm.mapping's AE workflow.
+  Source_DATAENT = clindata::edc_data_pages %>%
+    dplyr::mutate(studyid = protocolname),
+  Source_VISIT = clindata::rawplus_visdt
+)
+```
+
+## Step 1 — Map Raw Data
+
+Use `Ingest()` to standardise column names based on the workflow specs, then
+run the mapping workflows to produce the `Mapped_*` data layer.
+
+```{r run-mapping, message=FALSE, results='hide'}
+mapping_wf <- gsm.core::MakeWorkflowList(
+  strPath = system.file("workflow/1_mappings", package = "gsm.mapping"),
+  strNames = c("SUBJ", "AE", "VISIT", "SITE", "STUDY", "COUNTRY")
+)
+mapping_spec <- gsm.mapping::CombineSpecs(mapping_wf)
+lRaw <- gsm.mapping::Ingest(lSource, mapping_spec)
+lMapped <- gsm.core::RunWorkflows(mapping_wf, lRaw)
+```
+
+```{r show-mapped}
+names(lMapped)
+```
+
+## Step 2 — Run Analysis
+
+Run the `kri_TimeZFunnel` metric workflow to produce the analysis results.
+
+```{r run-metrics, message=FALSE, results='hide'}
+metrics_wf <- gsm.core::MakeWorkflowList(
+  strPath = system.file("workflow/2_metrics", package = "gsm.timez"),
+  strNames = "kri_TimeZFunnel",
+  bExact = TRUE
+)
+lAnalyzed <- gsm.core::RunWorkflows(metrics_wf, lMapped)
+```
+
+```{r show-analyzed}
+names(lAnalyzed)
+```
+
+## Step 3 — Prepare Reporting Data
+
+The `3_reporting` workflows stack and reshape the analysis results into the
+flat data frames expected by the report template.
+
+```{r run-reporting, message=FALSE, results='hide'}
+reporting_wf <- gsm.core::MakeWorkflowList(
+  strPath = system.file("workflow/3_reporting", package = "gsm.timez")
+)
+lReporting <- gsm.core::RunWorkflows(
+  reporting_wf,
+  c(lMapped, list(lAnalyzed = lAnalyzed, lWorkflows = metrics_wf))
+)
+```
+
+```{r show-reporting}
+names(lReporting)
+```
+
+## Step 4 — Generate HTML Report
+
+The `4_modules` workflow creates all charts and renders the HTML report using
+`gsm.timez`'s custom template (`inst/report/Report_TimeZFunnel.Rmd`).
+
+```{r run-modules, message=FALSE, results='hide'}
+module_wf <- gsm.core::MakeWorkflowList(
+  strPath = system.file("workflow/4_modules", package = "gsm.timez"),
+  strNames = "Report_TimeZFunnel",
+  bExact = TRUE
+)
+lReport <- gsm.core::RunWorkflows(module_wf, lReporting)
+```
+
+```{r show-report-path}
+lReport$Module_Report_TimeZFunnel
+```
+
+The workflow generates `Report_TimeZFunnel.html`. See the [Sample Report](Report_TimeZFunnel.html) for an example output.
+
+```{r move-for-docs, include=FALSE}
+# Move report to docs/articles/ during pkgdown builds
+dest_dir <- file.path("..", "docs", "articles")
+report_path <- lReport$Module_Report_TimeZFunnel
+if (!is.null(report_path) && file.exists(report_path) && dir.exists(dest_dir)) {
+  file.rename(report_path, file.path(dest_dir, "Report_TimeZFunnel.html"))
+}
+```

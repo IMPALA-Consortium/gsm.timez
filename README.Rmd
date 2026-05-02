@@ -74,7 +74,7 @@ gsm.timez::Timeline(
 ) %>%
   gsm.timez::Analyze_TimeZFunnel() %>%
   gsm.timez::Flag(vThreshold = c(-1.5, -1, 2, 3)) %>%
-  gsm.timez::Visualize_Heatmap()
+  gsm.timez::Visualize_Heatmap(nSites = 30)
 ```
 
 ## Quality Control
@@ -88,4 +88,4 @@ Since {gsm} is designed for use in a GCP framework, we have conducted extensive 
 - **Continuous Integration** - Continuous integration is provided via GitHub Actions.
 - **Code Formatting** - Code is formatted with {styler} before each release.
 - **Contributor Guidelines** - Detailed contributor guidelines including step-by-step processes for code development and releases are provided as a vignette.
-- **Code Demonstration** - Cookbook Vignette provides demos and explanations for code usage.
+- **Code Demonstration** - [Cookbook Vignette](https://impala-consortium.github.io/gsm.timez/articles/Cookbook.html) provides demos and explanations for code usage.

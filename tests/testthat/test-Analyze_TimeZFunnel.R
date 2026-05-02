@@ -1,4 +1,15 @@
 # Tests for Analyze_TimeZFunnel function
+#
+# - Basic functionality
+#     - runs without error
+#     - returns correct column names
+# - Metric calculation
+#     - Metric = Numerator / Denominator
+# - Multi-month data
+# - Error handling
+#     - errors on invalid input (missing required columns)
+# - Integration with clindata
+# - Column preservation (extra input columns pass through)
 
 test_that("Analyze_TimeZFunnel requires gsm.core package", {
   skip_if_not_installed("gsm.core")

@@ -1,4 +1,15 @@
 # Tests for Widget function
+#
+# - With Visualize_Heatmap
+#     - single metric: correct list structure and plotly output
+#     - multiple metrics: each metric gets its own entry
+# - With Visualize_Funnel and dfBounds
+#     - dfBounds filtered by MetricID and passed correctly
+#     - multiple metrics handled independently
+# - strIcon parameter
+#     - label includes icon HTML when strIcon is provided
+# - bInteractive parameter
+#     - produces static plotly when bInteractive = FALSE
 
 # Helper to create test data with MetricID
 create_test_results <- function(strMetricID = "Test_Metric") {
@@ -136,4 +147,24 @@ test_that("Widget handles multiple metrics", {
   expect_equal(names(result), c("Metric_A", "Metric_B"))
   expect_equal(names(result$Metric_A), "Visualize_Heatmap")
   expect_equal(names(result$Metric_B), "Visualize_Heatmap")
+})
+
+
+test_that("Widget includes icon in output_label when strIcon is provided", {
+  dfResults <- create_test_results()
+
+  result <- Widget(dfResults, "gsm.timez::Visualize_Heatmap", "Heatmap", strIcon = "chart-simple")
+
+  label <- attr(result$Test_Metric$Heatmap, "output_label")
+  expect_true(grepl("Heatmap", label))
+  expect_true(grepl("<svg", label))
+})
+
+
+test_that("Widget produces static plotly when bInteractive = FALSE", {
+  dfResults <- create_test_results()
+
+  result <- Widget(dfResults, "gsm.timez::Visualize_Heatmap", "Visualize_Heatmap", bInteractive = FALSE)
+
+  expect_s3_class(result$Test_Metric$Visualize_Heatmap, "plotly")
 })

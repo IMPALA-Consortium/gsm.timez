@@ -1,4 +1,14 @@
 # Tests for Visualize_Funnel function
+#
+# - Return type
+#     - returns a ggplot object
+#     - plot can be built without errors
+# - NMonth selection
+#     - NMonth = NULL defaults to largest non-sparse month
+#     - explicit valid NMonth is respected
+# - Error handling
+#     - errors when NMonth is sparse or absent
+#     - errors when vFlag attribute is missing from dfFlagged
 
 # Helper returning both dfFlagged and dfBounds
 create_funnel_inputs <- function() {
