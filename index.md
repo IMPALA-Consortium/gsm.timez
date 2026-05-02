@@ -2,43 +2,51 @@
 
 ## Overview
 
-The `gsm.timez` package provides functions for generating cumulative
-event timelines and calculating z-scores for clinical trial monitoring.
-It is part of the IMPALA Consortium’s GSM (Good Statistical Monitoring)
-framework.
+`gsm.timez` is a GSM extension for longitudinal site monitoring. It
+applies funnel plot scoring across sequential months to detect sites
+with unusual cumulative event trajectories.
 
-The package includes five main functions:
+The package includes the following main functions:
 
-- **[`Timeline()`](reference/timeline.md)**: Generates a site-level
-  timeline of cumulative numerator events (e.g., adverse events) over
-  sequential months.
-- **[`TimeZScore()`](reference/TimeZScore.md)**: Calculates z-scores for
-  each group (e.g., site) based on the rate of events, enabling
-  identification of sites with unusual event patterns.
-- **[`Flag()`](reference/Flag.md)**: Adds flag columns to analyzed data
-  identifying possible statistical outliers based on threshold
-  comparisons. This is an alias for
-  [`gsm.core::Flag()`](https://gilead-biostats.github.io/gsm.core/reference/Flag.html).
-- **[`Visualize()`](reference/Visualize.md)**: Creates a line plot
-  showing site metrics over time with dots colored by flag value to
-  highlight outliers.
-- **[`VisualizeBoxplot()`](reference/VisualizeBoxplot.md)**: Creates
-  boxplots showing the distribution of Metric values for each month,
-  with individual points colored by flag value.
+- **[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/timeline.md)**:
+  Generates a site-level timeline of cumulative numerator events
+  (e.g. adverse events) over sequential months.
+- **[`Analyze_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/Analyze_TimeZFunnel.md)**:
+  Applies
+  [`gsm.core::Analyze_NormalApprox()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html)
+  across sequential months, producing funnel plot scores for each site
+  over time.
+- **[`Flag()`](https://impala-consortium.github.io/gsm.timez/reference/Flag.md)**:
+  Extends
+  [`gsm.core::Flag()`](https://gilead-biostats.github.io/gsm.core/reference/Flag.html)
+  with sparse-month awareness for time-series data.
+- **[`PredictBounds_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/PredictBounds_TimeZFunnel.md)**:
+  Applies
+  [`gsm.core::Analyze_NormalApprox_PredictBounds()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox_PredictBounds.html)
+  across sequential months to produce funnel bounds for visualization.
+- **[`Visualize_Funnel()`](https://impala-consortium.github.io/gsm.timez/reference/Visualize_Funnel.md)**:
+  funnel plot for a single selected month, showing site Metric values
+  against their Denominator with Normal approximation control bounds.
+- **[`Visualize_Heatmap()`](https://impala-consortium.github.io/gsm.timez/reference/Visualize_Heatmap.md)**:
+  heatmap showing each site’s flag status over time.
+- **[`Visualize_Site()`](https://impala-consortium.github.io/gsm.timez/reference/Visualize_Site.md)**:
+  line plot highlighting a single site’s cumulative metric trajectory
+  against all other sites, marking flagged months.
 
 ## Installation
 
-You can install the development version of gsm.timez from
-[GitHub](https://github.com/) with:
+You can install the development version of gsm.timez with:
 
 ``` r
-# install.packages("pak")
+
+install.packages("pak")
 pak::pak("IMPALA-Consortium/gsm.timez")
 ```
 
 ## Quick Start
 
 ``` r
+
 library(gsm.timez)
 library(dplyr)
 
@@ -48,28 +56,22 @@ dfNumerator <- clindata::rawplus_ae
 dfDenominator <- clindata::rawplus_visdt %>%
   dplyr::mutate(visit_dt = as.Date(visit_dt, "%Y-%m-%d"))
 
-# Full pipeline: Timeline -> Z-Score -> Flag -> Visualize
+# Full pipeline: Timeline -> Funnel Score -> Flag -> Visualize
 gsm.timez::Timeline(
   dfSubjects            = dfSubjects,
   dfNumerator           = dfNumerator,
   dfDenominator         = dfDenominator,
-  strGroupCol           = "siteid",
+  strGroupCol           = "invid",
   strSubjectCol         = "subjid",
   strNumeratorDateCol   = "aest_dt",
   strDenominatorDateCol = "visit_dt"
 ) %>%
-  gsm.timez::TimeZScore() %>%
-  gsm.timez::Flag() %>%
-  gsm.timez::Visualize()
+  gsm.timez::Analyze_TimeZFunnel() %>%
+  gsm.timez::Flag(vThreshold = c(-1.5, -1, 2, 3)) %>%
+  gsm.timez::Visualize_Heatmap(nSites = 30)
 ```
 
 ![](reference/figures/README-quick-start-1.png)
-
-## Learn More
-
-For detailed documentation on each function, including parameters,
-output columns, and advanced usage examples, see the [Detailed Usage
-vignette](https://impala-consortium.github.io/gsm.timez/articles/DetailedUsage.html).
 
 ## Quality Control
 
@@ -92,5 +94,6 @@ particular, we do the following during early development:
 - **Contributor Guidelines** - Detailed contributor guidelines including
   step-by-step processes for code development and releases are provided
   as a vignette.
-- **Code Demonstration** - Cookbook Vignette provides demos and
-  explanations for code usage.
+- **Code Demonstration** - [Cookbook
+  Vignette](https://impala-consortium.github.io/gsm.timez/articles/Cookbook.html)
+  provides demos and explanations for code usage.

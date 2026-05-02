@@ -42,12 +42,13 @@ Timeline(
 - strGroupCol:
 
   The name of the column in `dfSubjects` used for grouping subjects
-  (e.g., "SiteID", "Treatment").
+  (e.g., "invid", "country").
 
 - strGroupLevel:
 
-  Optional character string specifying a subset level within
-  `strGroupCol` to be analyzed. If `NULL`, the full column is used.
+  Optional character string used as a label for the grouping level,
+  stored in the `GroupLevel` output column. If `NULL`, defaults to the
+  value of `strGroupCol`.
 
 - strSubjectCol:
 
@@ -102,40 +103,3 @@ A tibble with site-level monthly aggregations containing:
 - NMonth:
 
   Sequential month number for the group (1, 2, 3, ...).
-
-## Examples
-
-``` r
-library(dplyr)
-
-# Example data
-dfSubjects <- data.frame(
-  SubjectID = c(1, 2, 3),
-  SiteID = c("A", "A", "B")
-)
-dfNumerator <- data.frame(
-  SubjectID = c(1, 1, 2, 3),
-  EventDate = as.Date(c("2022-01-01", "2022-01-15", "2022-02-01", "2022-02-15"))
-)
-dfDenominator <- data.frame(
-  SubjectID = c(1, 1, 2, 2, 3),
-  VisitDate = as.Date(c("2022-01-01", "2022-01-20", "2022-01-15", "2022-02-01", "2022-02-01"))
-)
-
-# Generate site-level timeline
-Timeline(
-  dfSubjects = dfSubjects,
-  dfNumerator = dfNumerator,
-  dfDenominator = dfDenominator,
-  strGroupCol = "SiteID",
-  strSubjectCol = "SubjectID",
-  strNumeratorDateCol = "EventDate",
-  strDenominatorDateCol = "VisitDate"
-)
-#> # A tibble: 3 × 6
-#>   GroupID GroupLevel Numerator Denominator DenominatorMonth NMonth
-#>   <chr>   <chr>          <int>       <int> <date>            <int>
-#> 1 A       SiteID             2           3 2022-01-01            1
-#> 2 A       SiteID             3           4 2022-02-01            2
-#> 3 B       SiteID             0           1 2022-02-01            1
-```
