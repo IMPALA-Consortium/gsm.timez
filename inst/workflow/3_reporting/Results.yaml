@@ -28,14 +28,15 @@ steps:
       strName: Flagged
       strStudyID: strStudyID
 
-  # Latest month only for default charts
+  # Latest non-sparse month for default charts (consistent with custom visualizations)
   - output: Reporting_Results
     name: gsm.core::RunQuery
     params:
       df: dfResultsRaw
       strQuery: >
-        SELECT * FROM df AS d1 
+        SELECT * FROM df AS d1
         WHERE NMonth = (
-          SELECT MAX(NMonth) FROM df AS d2 
+          SELECT MAX(NMonth) FROM df AS d2
           WHERE d2.GroupID = d1.GroupID AND d2.MetricID = d1.MetricID
+          AND d2.Flag IS NOT NULL
         )
