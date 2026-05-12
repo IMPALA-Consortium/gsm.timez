@@ -16,14 +16,14 @@ Analyze_TimeZFunnel(dfTimeline)
 - dfTimeline:
 
   A data frame output from
-  [`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/timeline.md).
+  [`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/Timeline.md).
   Must contain columns: `GroupID`, `GroupLevel`, `Numerator`,
   `Denominator`, and `NMonth`.
 
 ## Value
 
 All columns from
-[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/timeline.md),
+[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/Timeline.md),
 plus the following additional columns:
 
 - `Metric`: The ratio of Numerator to Denominator (Numerator /
@@ -37,4 +37,4 @@ plus the following additional columns:
 ## See also
 
 [`gsm.core::Analyze_NormalApprox()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html),
-[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/timeline.md)
+[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/Timeline.md)

@@ -66,7 +66,7 @@ individually.
 
 ### Timeline
 
-[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/timeline.md)
+[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/Timeline.md)
 generates a site-level timeline of cumulative numerator events over
 sequential months, producing one row per site-month combination:
 

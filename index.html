@@ -65,7 +65,7 @@
 <p>The package includes the following main functions:</p>
 <ul>
 <li>
-<strong><code><a href="reference/timeline.html">Timeline()</a></code></strong>: Generates a site-level timeline of cumulative numerator events (e.g. adverse events) over sequential months.</li>
+<strong><code><a href="reference/Timeline.html">Timeline()</a></code></strong>: Generates a site-level timeline of cumulative numerator events (e.g. adverse events) over sequential months.</li>
 <li>
 <strong><code><a href="reference/Analyze_TimeZFunnel.html">Analyze_TimeZFunnel()</a></code></strong>: Applies <code><a href="https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html" class="external-link">gsm.core::Analyze_NormalApprox()</a></code> across sequential months, producing funnel plot scores for each site over time.</li>
 <li>
@@ -102,7 +102,7 @@
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>visit_dt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">visit_dt</span>, <span class="st">"%Y-%m-%d"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Full pipeline: Timeline -&gt; Funnel Score -&gt; Flag -&gt; Visualize</span></span>
-<span><span class="fu">gsm.timez</span><span class="fu">::</span><span class="fu"><a href="reference/timeline.html">Timeline</a></span><span class="op">(</span></span>
+<span><span class="fu">gsm.timez</span><span class="fu">::</span><span class="fu"><a href="reference/Timeline.html">Timeline</a></span><span class="op">(</span></span>
 <span>  dfSubjects            <span class="op">=</span> <span class="va">dfSubjects</span>,</span>
 <span>  dfNumerator           <span class="op">=</span> <span class="va">dfNumerator</span>,</span>
 <span>  dfDenominator         <span class="op">=</span> <span class="va">dfDenominator</span>,</span>

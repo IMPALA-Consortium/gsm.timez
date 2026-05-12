@@ -14,6 +14,8 @@
   : Calculate Predicted Bounds for Analyze_TimeZFunnel Visualization
 - [`Report_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/Report_TimeZFunnel.md)
   : Generate a custom KRI HTML report
+- [`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/Timeline.md)
+  : Generate Site-Level Cumulative Event Timeline
 - [`Visualize_Funnel()`](https://impala-consortium.github.io/gsm.timez/reference/Visualize_Funnel.md)
   : Visualize Funnel Plot for a Single Month
 - [`Visualize_Heatmap()`](https://impala-consortium.github.io/gsm.timez/reference/Visualize_Heatmap.md)
@@ -22,5 +24,3 @@
   : Visualize Single Site Trajectory with Flag Indicators
 - [`Widget()`](https://impala-consortium.github.io/gsm.timez/reference/Widget.md)
   : Generic Widget for Timeline Visualizations
-- [`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/timeline.md)
-  : Generate Site-Level Cumulative Event Timeline

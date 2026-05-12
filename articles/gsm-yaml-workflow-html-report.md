@@ -119,7 +119,7 @@ lReport <- gsm.core::RunWorkflows(module_wf, lReporting)
 ``` r
 
 lReport$Module_Report_TimeZFunnel
-#> [1] "/home/runner/work/gsm.timez/gsm.timez/vignettes/kri_report_AAAA0000000_Site_20260502.html"
+#> [1] "/home/runner/work/gsm.timez/gsm.timez/vignettes/kri_report_AAAA0000000_Site_20260512.html"
 ```
 
 The workflow generates `Report_TimeZFunnel.html`. See the [Sample

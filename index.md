@@ -8,7 +8,7 @@ with unusual cumulative event trajectories.
 
 The package includes the following main functions:
 
-- **[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/timeline.md)**:
+- **[`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/Timeline.md)**:
   Generates a site-level timeline of cumulative numerator events
   (e.g. adverse events) over sequential months.
 - **[`Analyze_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/Analyze_TimeZFunnel.md)**:
