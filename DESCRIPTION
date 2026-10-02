@@ -12,10 +12,10 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Remotes:
     clindata=Gilead-BioStats/clindata@main,
-    gsm.core=Gilead-BioStats/gsm.core@main,
-    gsm.mapping=Gilead-BioStats/gsm.mapping@main,
-    gsm.reporting=Gilead-BioStats/gsm.reporting@main,
-    gsm.kri=Gilead-BioStats/gsm.kri@main
+    gsm.core=Gilead-Public/gsm.core@main,
+    gsm.mapping=Gilead-Public/gsm.mapping@main,
+    gsm.reporting=Gilead-Public/gsm.reporting@main,
+    gsm.kri=Gilead-Public/gsm.kri@main
 Imports:
     dplyr,
     fontawesome,
