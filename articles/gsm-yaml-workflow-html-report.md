@@ -38,14 +38,19 @@ mapping_wf <- gsm.core::MakeWorkflowList(
   strPath = system.file("workflow/1_mappings", package = "gsm.mapping"),
   strNames = c("SUBJ", "AE", "VISIT", "SITE", "STUDY", "COUNTRY")
 )
+#> Warning: `MakeWorkflowList()` was deprecated in gsm.core 1.3.0.
+#> ℹ Please use `workr::MakeWorkflowList()` instead.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 mapping_spec <- gsm.mapping::CombineSpecs(mapping_wf)
 lRaw <- gsm.mapping::Ingest(lSource, mapping_spec)
-#> Warning: Field `visit_dt`: 19 unparsable Date(s) set to NA
 lMapped <- gsm.core::RunWorkflows(mapping_wf, lRaw)
-#> Warning: Not all specified columns in the spec are present in the data, missing columns
-#> are: Raw_AE$aetoxgr
-#> Warning: Not all specified columns in the spec are present in the data, missing columns
-#> are: Raw_STUDY$db_lock_dt
+#> Warning: `RunWorkflows()` was deprecated in gsm.core 1.3.0.
+#> ℹ Please use `workr::RunWorkflows()` instead.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
 ``` r
@@ -90,6 +95,13 @@ lReporting <- gsm.core::RunWorkflows(
   reporting_wf,
   c(lMapped, list(lAnalyzed = lAnalyzed, lWorkflows = metrics_wf))
 )
+#> Warning: `RunQuery()` was deprecated in gsm.core 1.3.0.
+#> ℹ Please use `workr::RunQuery()` instead.
+#> ℹ The deprecated feature was likely used in the workr package.
+#>   Please report the issue to the authors.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
 ``` r
@@ -119,7 +131,7 @@ lReport <- gsm.core::RunWorkflows(module_wf, lReporting)
 ``` r
 
 lReport$Module_Report_TimeZFunnel
-#> [1] "/home/runner/work/gsm.timez/gsm.timez/vignettes/kri_report_AAAA0000000_Site_20260512.html"
+#> [1] "/home/runner/work/gsm.timez/gsm.timez/vignettes/kri_report_AAAA0000000_Site_20261004.html"
 ```
 
 The workflow generates `Report_TimeZFunnel.html`. See the [Sample

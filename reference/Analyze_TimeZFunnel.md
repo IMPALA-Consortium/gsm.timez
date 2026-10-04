@@ -1,7 +1,7 @@
 # Calculate Funnel Plot Scores for Timeline Data
 
 Applies
-[`gsm.core::Analyze_NormalApprox()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html)
+[`gsm.core::Analyze_NormalApprox()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html)
 to each month of `dfTimeline`, producing a funnel plot score for each
 site-month combination.
 
@@ -28,13 +28,13 @@ plus the following additional columns:
 
 - `Metric`: The ratio of Numerator to Denominator (Numerator /
   Denominator). Computed before calling
-  [`gsm.core::Analyze_NormalApprox`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html).
+  [`gsm.core::Analyze_NormalApprox`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html).
 
 - `OverallMetric`, `Factor`, `Score`: See
-  [`gsm.core::Analyze_NormalApprox()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html)
+  [`gsm.core::Analyze_NormalApprox()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html)
   for definitions.
 
 ## See also
 
-[`gsm.core::Analyze_NormalApprox()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html),
+[`gsm.core::Analyze_NormalApprox()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html),
 [`Timeline()`](https://impala-consortium.github.io/gsm.timez/reference/Timeline.md)

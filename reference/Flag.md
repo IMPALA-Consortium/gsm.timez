@@ -1,8 +1,8 @@
 # Flag
 
 Wrapper around
-[`gsm.core::Flag()`](https://gilead-biostats.github.io/gsm.core/reference/Flag.html).
-Stores `vThreshold` and `vFlag` as attributes for use by downstream
+[`gsm.core::Flag()`](https://rdrr.io/pkg/gsm.core/man/Flag.html). Stores
+`vThreshold` and `vFlag` as attributes for use by downstream
 visualization functions.
 
 Months where the number of distinct sites falls below `nMinSiteFraction`
@@ -50,7 +50,7 @@ Flag(
 - ...:
 
   Additional arguments passed to
-  [`gsm.core::Flag()`](https://gilead-biostats.github.io/gsm.core/reference/Flag.html).
+  [`gsm.core::Flag()`](https://rdrr.io/pkg/gsm.core/man/Flag.html).
 
 ## Value
 
@@ -64,5 +64,5 @@ Also carries attributes `vThreshold` and `vFlag` for downstream use.
 
 ## See also
 
-[`gsm.core::Flag()`](https://gilead-biostats.github.io/gsm.core/reference/Flag.html),
+[`gsm.core::Flag()`](https://rdrr.io/pkg/gsm.core/man/Flag.html),
 [`PredictBounds_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/PredictBounds_TimeZFunnel.md)

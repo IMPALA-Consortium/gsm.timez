@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Cookbook • gsm.timez</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Cookbook">
 </head>
@@ -70,7 +70,7 @@
 site-level monitoring. Where standard GSM metrics provide a
 cross-sectional snapshot of each site’s performance,
 <code>gsm.timez</code> tracks how cumulative event rates evolve month by
-month, applying <code><a href="https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html" class="external-link">gsm.core::Analyze_NormalApprox()</a></code> at each
+month, applying <code><a href="https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html" class="external-link">gsm.core::Analyze_NormalApprox()</a></code> at each
 time step to flag sites whose trajectory diverges from the study-wide
 trend.</p>
 <p>This vignette provides an overview of the main functions in
@@ -206,7 +206,7 @@ site-month combination:</p>
 <h3 id="analyze_timezfunnel">Analyze_TimeZFunnel<a class="anchor" aria-label="anchor" href="#analyze_timezfunnel"></a>
 </h3>
 <p><code><a href="../reference/Analyze_TimeZFunnel.html">Analyze_TimeZFunnel()</a></code> applies
-<code><a href="https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html" class="external-link">gsm.core::Analyze_NormalApprox()</a></code> at each monthly
+<code><a href="https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html" class="external-link">gsm.core::Analyze_NormalApprox()</a></code> at each monthly
 cross-section to calculate a funnel plot score for each site:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dfTimeZScore</span> <span class="op">&lt;-</span> <span class="fu">gsm.timez</span><span class="fu">::</span><span class="fu"><a href="../reference/Analyze_TimeZFunnel.html">Analyze_TimeZFunnel</a></span><span class="op">(</span><span class="va">dfTimeline</span><span class="op">)</span></span></code></pre></div>
@@ -235,7 +235,7 @@ site’s flag status over time:</p>
 <p><code><a href="../reference/Visualize_Funnel.html">Visualize_Funnel()</a></code> creates a funnel plot for a selected
 month, showing site Metric values against their Denominator. The bounds
 are computed by <code><a href="../reference/PredictBounds_TimeZFunnel.html">PredictBounds_TimeZFunnel()</a></code>, which applies
-<code><a href="https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox_PredictBounds.html" class="external-link">gsm.core::Analyze_NormalApprox_PredictBounds()</a></code> at each
+<code><a href="https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox_PredictBounds.html" class="external-link">gsm.core::Analyze_NormalApprox_PredictBounds()</a></code> at each
 month:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dfBounds</span> <span class="op">&lt;-</span> <span class="fu">gsm.timez</span><span class="fu">::</span><span class="fu"><a href="../reference/PredictBounds_TimeZFunnel.html">PredictBounds_TimeZFunnel</a></span><span class="op">(</span><span class="va">dfTimeZScore</span>, vThreshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
@@ -268,7 +268,7 @@ months:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

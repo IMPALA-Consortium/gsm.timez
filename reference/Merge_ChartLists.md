@@ -2,7 +2,7 @@
 
 Combines chart lists by merging charts within each MetricID. Used to
 combine default charts from
-[`gsm.kri::MakeCharts()`](https://gilead-biostats.github.io/gsm.kri/reference/MakeCharts.html)
+[`gsm.kri::MakeCharts()`](https://gilead-public.github.io/gsm.kri/reference/MakeCharts.html)
 with custom charts from
 [`Widget()`](https://impala-consortium.github.io/gsm.timez/reference/Widget.md).
 

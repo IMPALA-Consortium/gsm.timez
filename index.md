@@ -13,16 +13,16 @@ The package includes the following main functions:
   (e.g. adverse events) over sequential months.
 - **[`Analyze_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/Analyze_TimeZFunnel.md)**:
   Applies
-  [`gsm.core::Analyze_NormalApprox()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html)
+  [`gsm.core::Analyze_NormalApprox()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html)
   across sequential months, producing funnel plot scores for each site
   over time.
 - **[`Flag()`](https://impala-consortium.github.io/gsm.timez/reference/Flag.md)**:
   Extends
-  [`gsm.core::Flag()`](https://gilead-biostats.github.io/gsm.core/reference/Flag.html)
-  with sparse-month awareness for time-series data.
+  [`gsm.core::Flag()`](https://rdrr.io/pkg/gsm.core/man/Flag.html) with
+  sparse-month awareness for time-series data.
 - **[`PredictBounds_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/PredictBounds_TimeZFunnel.md)**:
   Applies
-  [`gsm.core::Analyze_NormalApprox_PredictBounds()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox_PredictBounds.html)
+  [`gsm.core::Analyze_NormalApprox_PredictBounds()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox_PredictBounds.html)
   across sequential months to produce funnel bounds for visualization.
 - **[`Visualize_Funnel()`](https://impala-consortium.github.io/gsm.timez/reference/Visualize_Funnel.md)**:
   funnel plot for a single selected month, showing site Metric values

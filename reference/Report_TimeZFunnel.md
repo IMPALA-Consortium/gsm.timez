@@ -1,7 +1,7 @@
 # Generate a custom KRI HTML report
 
 Wrapper around
-[`gsm.kri::Report_KRI()`](https://gilead-biostats.github.io/gsm.kri/reference/Report_KRI.html)
+[`gsm.kri::Report_KRI()`](https://gilead-public.github.io/gsm.kri/reference/Report_KRI.html)
 that uses the custom report template bundled with `gsm.timez`
 (`inst/report/Report_TimeZFunnel.Rmd`).
 

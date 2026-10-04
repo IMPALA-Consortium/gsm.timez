@@ -1,7 +1,7 @@
 # Calculate Predicted Bounds for Analyze_TimeZFunnel Visualization
 
 Applies
-[`gsm.core::Analyze_NormalApprox_PredictBounds()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox_PredictBounds.html)
+[`gsm.core::Analyze_NormalApprox_PredictBounds()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox_PredictBounds.html)
 to each month of `dfAnalyzed`, producing funnel plot bounds for each
 month.
 
@@ -29,7 +29,7 @@ PredictBounds_TimeZFunnel(
   Numeric vector of threshold values for bounds. Default is
   `c(-3, -2, 2, 3)`. A threshold of 0 (for the mean line) is
   automatically included by
-  [`gsm.core::Analyze_NormalApprox_PredictBounds`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox_PredictBounds.html).
+  [`gsm.core::Analyze_NormalApprox_PredictBounds`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox_PredictBounds.html).
 
 - nMinSiteFraction:
 
@@ -61,5 +61,5 @@ of Denominator values observed in the data.
 
 [`Analyze_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/Analyze_TimeZFunnel.md)
 for calculating funnel scores,
-[`gsm.core::Analyze_NormalApprox_PredictBounds`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox_PredictBounds.html)
+[`gsm.core::Analyze_NormalApprox_PredictBounds`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox_PredictBounds.html)
 for the underlying bounds calculation.

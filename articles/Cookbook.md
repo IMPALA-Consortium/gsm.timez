@@ -4,7 +4,7 @@
 monitoring. Where standard GSM metrics provide a cross-sectional
 snapshot of each site’s performance, `gsm.timez` tracks how cumulative
 event rates evolve month by month, applying
-[`gsm.core::Analyze_NormalApprox()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html)
+[`gsm.core::Analyze_NormalApprox()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html)
 at each time step to flag sites whose trajectory diverges from the
 study-wide trend.
 
@@ -98,7 +98,7 @@ knitr::kable(head(dfTimeline))
 
 [`Analyze_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/Analyze_TimeZFunnel.md)
 applies
-[`gsm.core::Analyze_NormalApprox()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox.html)
+[`gsm.core::Analyze_NormalApprox()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox.html)
 at each monthly cross-section to calculate a funnel plot score for each
 site:
 
@@ -138,7 +138,7 @@ creates a funnel plot for a selected month, showing site Metric values
 against their Denominator. The bounds are computed by
 [`PredictBounds_TimeZFunnel()`](https://impala-consortium.github.io/gsm.timez/reference/PredictBounds_TimeZFunnel.md),
 which applies
-[`gsm.core::Analyze_NormalApprox_PredictBounds()`](https://gilead-biostats.github.io/gsm.core/reference/Analyze_NormalApprox_PredictBounds.html)
+[`gsm.core::Analyze_NormalApprox_PredictBounds()`](https://rdrr.io/pkg/gsm.core/man/Analyze_NormalApprox_PredictBounds.html)
 at each month:
 
 ``` r
